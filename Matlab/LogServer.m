@@ -10,7 +10,8 @@ readings = array2table( zeros(Nsize,6) ...
 
 % Prepare figures
 
-f1 = figure;
+f1 = figure(1);
+clf(f1)
 subplot(2,1,1);
 ax11 = gca;
 subplot(2,1,2);
@@ -29,12 +30,8 @@ AccZLine = animatedline(ax21, "Color", 'green');
 
 
 % Create tcp socket
-server = tcpserver("0.0.0.0",6000);
+server = tcpserver("0.0.0.0",6000,"Timeout",60);
 server.ByteOrder = "big-endian";
-
-while ~server.Connected
-    % wait for connection
-end
 
 for i = 1:100
     
@@ -52,7 +49,7 @@ for i = 1:100
                        'VariableNames', ...
                        {'GyroX','GyroY','GyroZ','AccX', 'AccY','AccZ'} ...
                        );
-    readings(i) = data;
+    readings(i,:) = data;
 
 end
 
