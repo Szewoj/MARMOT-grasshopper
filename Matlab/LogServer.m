@@ -30,8 +30,7 @@ AccZLine = animatedline(ax21, "Color", 'green');
 
 
 % Create tcp socket
-server = tcpserver("0.0.0.0",6000,"Timeout",60);
-server.ByteOrder = "big-endian";
+server = tcpclient("192.168.1.101",6000,"ByteOrder","big-endian");
 
 for i = 1:100
     

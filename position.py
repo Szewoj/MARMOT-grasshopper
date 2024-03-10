@@ -2,6 +2,8 @@ import Logger
 import Sensor.imu6dof as IMU
 import time
 
+from InterruptibleLoop import InterruptibleLoop
+
 
 def main():
     imu = IMU.Imu()
@@ -9,13 +11,14 @@ def main():
         return
 
     logger = Logger.TCPLogger()
-    logger.connect()
-        
+    logger.run_async()
+    
+    loop = InterruptibleLoop()
 
-    for i in range(100):
+    while loop.loop_again:
         reading:IMU.Readings = imu.getData()
         logger.log(reading.getList())
-        reading.print()
+        #reading.print()
         time.sleep(0.1)
 
     imu.close()
