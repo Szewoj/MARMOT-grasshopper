@@ -1,5 +1,6 @@
 import smbus2, time
 import Sensor.LSM6DS3 as LSM6DS3
+import numpy as np
 
 
 def toSigned16(n:int) -> int:
@@ -10,13 +11,24 @@ def toSigned16(n:int) -> int:
 
 class Readings:
     """Class for IMU 6DOF reading data"""
-    def __init__(self, gx=0, gy=0, gz=0, xlx=0, xly=0, xlz=0) -> None:
+    def __init__(self, ts=0, gx=0, gy=0, gz=0, xlx=0, xly=0, xlz=0) -> None:
+        self.timestamp = ts
         self.g_x = gx
         self.g_y = gy
         self.g_z = gz
         self.xl_x = xlx
         self.xl_y = xly
         self.xl_z = xlz
+        self.quat_w = 1.0
+        self.quat_i = 0.0
+        self.quat_j = 0.0
+        self.quat_k = 0.0
+
+    def setOrientation(self, quat:np.ndarray):
+        self.quat_w = quat.item(0)
+        self.quat_i = quat.item(1)
+        self.quat_j = quat.item(2)
+        self.quat_k = quat.item(3)
 
     def print(self) -> None:
         print("Gyro: "+ "{0:8.2f} x; ".format(self.g_x)  + 
@@ -27,7 +39,7 @@ class Readings:
                         "{0:6.2f} z ".format(self.xl_z))
         
     def getList(self) -> list:
-        return [self.g_x, self.g_y, self.g_z, self.xl_x, self.xl_y, self.xl_z]
+        return [self.timestamp, self.g_x, self.g_y, self.g_z, self.xl_x, self.xl_y, self.xl_z, self.quat_w, self.quat_i, self.quat_j, self.quat_k]
 
         
 #---
@@ -80,13 +92,17 @@ class Imu:
             readings = Readings()
             return readings
 
+        ts = time.time()
         data = self.i2cBus.read_i2c_block_data(LSM6DS3.ADDR, LSM6DS3.OUTX_L_G, 12)
-        readings = Readings(toSigned16(data[0]  | (data[1] << 8)) * 1000 / 0x7fff,
-                        toSigned16(data[2]  | (data[3] << 8)) * 1000 / 0x7fff,
-                        toSigned16(data[4]  | (data[5] << 8)) * 1000 / 0x7fff,
+        readings = Readings(
+                        ts,
+                        toSigned16(data[0]  | (data[1] << 8)) * 1000 / 0x7fff - LSM6DS3.G_FS_1000_DRIFT[0],
+                        toSigned16(data[2]  | (data[3] << 8)) * 1000 / 0x7fff - LSM6DS3.G_FS_1000_DRIFT[1],
+                        toSigned16(data[4]  | (data[5] << 8)) * 1000 / 0x7fff - LSM6DS3.G_FS_1000_DRIFT[2],
                         toSigned16(data[6]  | (data[7] << 8)) * 4   / 0x7fff,
                         toSigned16(data[8]  | (data[9] << 8)) * 4   / 0x7fff,
-                        toSigned16(data[10] | (data[11] << 8))* 4   / 0x7fff)
+                        toSigned16(data[10] | (data[11] << 8))* 4   / 0x7fff
+                        )
 
         return readings
 

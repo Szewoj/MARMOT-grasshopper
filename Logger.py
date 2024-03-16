@@ -5,11 +5,11 @@ from InterruptibleLoop import InterruptibleLoop
 
 
 class TCPLogger:
-    HOST_ADDR = '0.0.0.0'
-    HOST_PORT = 6000
 
+    def __init__(self, host='0.0.0.0', port=6000) -> None:
+        self.host = host
+        self.port = port
 
-    def __init__(self) -> None:
         self.s:socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self._connection_lock:threading.Lock = threading.Lock()
@@ -24,7 +24,7 @@ class TCPLogger:
 
 
     def run(self) -> None:
-        self.s.bind((self.HOST_ADDR, self.HOST_PORT))
+        self.s.bind((self.host, self.port))
         self.s.listen(1)
         self.s.settimeout(5)
 
@@ -78,13 +78,6 @@ class TCPLogger:
     def run_async(self) -> None:
         self._th = threading.Thread(target=self.run)
         self._th.start()
-    
-
-    def connect(self) -> bool:
-        self.s.connect((TCPLogger.HOST_ADDR, TCPLogger.HOST_PORT))
-        self.is_connected = True
-        return True
-
 
     def close(self):
         self._thread_loop = False
@@ -113,19 +106,5 @@ class TCPLogger:
                 self._queue.put_nowait(data)
             except queue.Full as e:
                 return
-        
 
-#---
-
-def main():
-     logger = TCPLogger()
-     logger.connect()
-     logger.log([1.1, 2.2, 3.3, 4.4, 5.5, 6.6])
-     logger.close()
-
-
-#---
-
-if __name__ == "__main__":
-    main()
 
