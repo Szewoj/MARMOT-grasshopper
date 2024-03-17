@@ -1,6 +1,7 @@
 import smbus2, time
 import Sensor.LSM6DS3 as LSM6DS3
 import numpy as np
+import ahrs
 
 
 def toSigned16(n:int) -> int:
@@ -38,10 +39,20 @@ class Readings:
                         "{0:6.2f} y; ".format(self.xl_y) + 
                         "{0:6.2f} z ".format(self.xl_z))
         
+    def getTimestamp(self) -> float:
+        return self.timestamp
+        
     def getList(self) -> list:
         return [self.timestamp, self.g_x, self.g_y, self.g_z, self.xl_x, self.xl_y, self.xl_z, self.quat_w, self.quat_i, self.quat_j, self.quat_k]
+    
+    def getOrientation(self) -> np.array:
+        return np.array([self.quat_w, self.quat_i, self.quat_j, self.quat_k])
 
-        
+    def getGyroSI(self) -> np.array:
+        return np.array([self.g_x, self.g_y, self.g_z]) * ahrs.DEG2RAD
+    
+    def getAccSI(self) -> np.array:
+        return np.array([self.xl_x, self.xl_y, self.xl_z]) * ahrs.MEAN_NORMAL_GRAVITY
 #---
 
 
