@@ -4,6 +4,12 @@ import numpy as np
 
 from InterruptibleLoop import InterruptibleLoop
 
+class OrientationReader:
+    """Class for automatic orientation filtering. Runs on its own thread"""
+
+    def __init__(self, port=6000) -> None:
+        self.imu = IMU.Imu()
+        self.logger = Logger.TCPLogger(port)
 
 def main():
     imu = IMU.Imu()
