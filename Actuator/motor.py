@@ -50,7 +50,6 @@ def PRIVATE_calcPositionOffset(freq):
 class ServoMotor:
     """Class for servo motor control for PowerHD 3001HB"""
     def __init__(self, channel, bus=1, freq=-1) -> None:
-        self.ch = channel
         self.i2cbus:smbus2.SMBus = smbus2.SMBus(bus)
 
         if freq < 40 or freq > 1000:
@@ -59,6 +58,11 @@ class ServoMotor:
 
         self.K = PRIVATE_calcPositionMagnifier(freq)
         self.OFF = PRIVATE_calcPositionOffset(freq)
+
+        self.CHL = PCA9685.getChannelAddr(channel)
+
+        if self.CHL == -1:
+            print("Could not set channel. Servo init failed!")
 
         # TODO setup servo, turn off channel
 
@@ -72,10 +76,15 @@ def main():
     freq = 50 #Hz
     K = PRIVATE_calcPositionMagnifier(freq)
     OFF = PRIVATE_calcPositionOffset(freq)
+
+
+
     print("Servo setup:")
     print("  0% -> " + str(round(OFF)) + "us")
     print(" 50% -> " + str(round(50*K + OFF)) + "us")
     print("100% -> " + str(round(100*K + OFF)) + "us")
+
+
 
 
 if __name__ == "__main__":
