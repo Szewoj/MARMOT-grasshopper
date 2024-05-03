@@ -17,6 +17,8 @@ OSC_CLOCK = 25000000
 
 MODE1_SLEEP = 0b00010000
 
+MODE1_AI = 0b00100000
+
 
 # helper functions:
 
