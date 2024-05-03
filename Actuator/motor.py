@@ -1,7 +1,7 @@
 # Designed for PowerHD 3001HB servomotor
 
 import Actuator.PCA9685 as PCA9685
-import smbus2, time
+import time, smbus2
 
 ###
 # constants:
@@ -37,11 +37,12 @@ def initPCA9685(freq=50, bus=1):
     i2cbus.close()
 
 
-def calcPositionMagnifier(freq):
-    pass # TODO
+def PRIVATE_calcPositionMagnifier(freq):
+    return (SERVO_MAX - SERVO_MIN) * freq * 4096 / 100000
 
-def calcPositionOffset(freq):
-    pass # TODO
+def PRIVATE_calcPositionOffset(freq):
+    return SERVO_MIN * freq * 4096 / 1000
+
 
 ###
 # classes:
@@ -51,8 +52,15 @@ class ServoMotor:
     def __init__(self, channel, bus=1, freq=-1) -> None:
         self.ch = channel
         self.i2cbus:smbus2.SMBus = smbus2.SMBus(bus)
-        # TODO setup servo, turn off channel, calculate limits
 
+        if freq < 40 or freq > 1000:
+            # check real frequency
+            freq = PCA9685.calcFreq(self.i2cbus.read_byte_data(PCA9685.ADDR, PCA9685.PRE_SCALAR))
+
+        self.K = PRIVATE_calcPositionMagnifier(freq)
+        self.OFF = PRIVATE_calcPositionOffset(freq)
+
+        # TODO setup servo, turn off channel
 
 
 
@@ -61,7 +69,13 @@ class ServoMotor:
 
 def main():
     # TODO init PCA9685, setup one servo, turn in sinus wave
-    pass
+    freq = 50 #Hz
+    K = PRIVATE_calcPositionMagnifier(freq)
+    OFF = PRIVATE_calcPositionOffset(freq)
+    print("Servo setup:")
+    print("  0% -> " + str(round(OFF)) + "us")
+    print(" 50% -> " + str(round(50*K + OFF)) + "us")
+    print("100% -> " + str(round(100*K + OFF)) + "us")
 
 
 if __name__ == "__main__":
