@@ -1,6 +1,7 @@
 function readingTable = LogIMUloop(maxLoop, posePlot, ...
     GyroXLine, GyroYLine, GyroZLine, ...
-    AccXLine, AccYLine, AccZLine)
+    AccXLine, AccYLine, AccZLine, ...
+    RotXLine, RotYLine)
 %LOGIMULOP Loop connection to IMU device and poll readings
     arguments
         maxLoop (1,1) {mustBeInteger}
@@ -11,6 +12,8 @@ function readingTable = LogIMUloop(maxLoop, posePlot, ...
         AccXLine (1,1) {mustBeA(AccXLine, "matlab.graphics.animation.AnimatedLine")}
         AccYLine (1,1) {mustBeA(AccYLine, "matlab.graphics.animation.AnimatedLine")}
         AccZLine (1,1) {mustBeA(AccZLine, "matlab.graphics.animation.AnimatedLine")}
+        RotXLine (1,1) {mustBeA(RotXLine, "matlab.graphics.animation.AnimatedLine")}
+        RotYLine (1,1) {mustBeA(RotYLine, "matlab.graphics.animation.AnimatedLine")}
     end
 
     startTime = posixtime(datetime('now')) - 3600;
@@ -40,7 +43,11 @@ function readingTable = LogIMUloop(maxLoop, posePlot, ...
         rpy(1) = 0;
         q2 = quaternion(eul2quat(rpy,"ZYX"));
         set(posePlot,Orientation=q2);
-        drawnow
+
+        addpoints
+
+        addpoints(RotXLine, timestamp, rpy(3));
+        addpoints(RotYLine, timestamp, rpy(2));
         
         S.Time = datetime(data(1),'convertfrom','posixtime', 'Format', 'yyyy-MM-dd HH:mm:ss.SSS');
         S.GyroX = data(2);

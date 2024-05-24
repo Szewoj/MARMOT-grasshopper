@@ -31,7 +31,7 @@ def initPCA9685(freq=50, bus=1):
     mode1reg = mode1reg | PCA9685.MODE1_AI
 
     # disable sleep mode
-    i2cbus.write_byte_data(PCA9685.ADDR, PCA9685.MODE1, mode1reg | PCA9685.MODE1_SLEEP)
+    i2cbus.write_byte_data(PCA9685.ADDR, PCA9685.MODE1, mode1reg & (~PCA9685.MODE1_SLEEP))
     time.sleep(1)
 
     i2cbus.close()
@@ -63,10 +63,35 @@ class ServoMotor:
 
         if self.CHL == -1:
             print("Could not set channel. Servo init failed!")
+        else:
+            midpt:int = round(50 * self.K + self.OFF)
+            midpt_l = midpt & PCA9685.SERVO_L_MASK
+            midpt_h = (midpt >> 8) & PCA9685.SERVO_H_MASK
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL, 0)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+1, 0)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+2, PCA9685.SERVO_ON_OFF | midpt_h)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+3, midpt_l)
+        
 
-        # TODO setup servo, turn off channel
+
+    def turnOff(self) -> None:
+        if self.CHL is not -1:
+            reg = self.i2cbus.read_byte_data(PCA9685.ADDR, self.CHL+2)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+2, reg | PCA9685.SERVO_ON_OFF)
 
 
+
+    def turnOn(self) -> None:
+        if self.CHL is not -1:
+            reg = self.i2cbus.read_byte_data(PCA9685.ADDR, self.CHL+2)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+2, reg & (~PCA9685.SERVO_ON_OFF))
+
+
+
+    def setPosition(self, pos:float) -> None:
+        """Set servo position from 0 to 100 (float)"""
+        if self.CHL is not -1:
+            offval:int = round(pos * self.K + self.OFF)
 
 ###
 # servo test:
@@ -77,14 +102,10 @@ def main():
     K = PRIVATE_calcPositionMagnifier(freq)
     OFF = PRIVATE_calcPositionOffset(freq)
 
-
-
     print("Servo setup:")
     print("  0% -> " + str(round(OFF)) + "us")
     print(" 50% -> " + str(round(50*K + OFF)) + "us")
     print("100% -> " + str(round(100*K + OFF)) + "us")
-
-
 
 
 if __name__ == "__main__":

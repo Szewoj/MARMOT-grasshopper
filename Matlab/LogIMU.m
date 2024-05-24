@@ -43,8 +43,21 @@ xlabel("X");
 ylabel("Y");
 zlabel("Z");
 
+% Figure 2
+
+f3 = figure(3);
+ax3 = gca;
+
+title(ax3, 'Rotation')
+
+RotXLine = animatedline(ax3, "Color", 'red');
+RotYLine = animatedline(ax3, "Color", 'blue');
+
+grid(ax3, "on")
+
+legend(ax3, ["Rotation X", "Rotation Y"], 'Location','northwest')
 
 readings = LogIMUloop(10000, ...
-    posePlot, GyroXLine, GyroYLine, GyroZLine, AccXLine, AccYLine, AccZLine);
+    posePlot, GyroXLine, GyroYLine, GyroZLine, AccXLine, AccYLine, AccZLine, RotXLine, RotYLine);
 
 
