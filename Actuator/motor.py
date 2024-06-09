@@ -6,8 +6,8 @@ import time, smbus2
 ###
 # constants:
 
-SERVO_MIN = 0.8 #ms
-SERVO_MAX = 2.2 #ms
+SERVO_MIN = 0.7 #ms
+SERVO_MAX = 2.3 #ms
 
 ###
 # functions:
@@ -69,29 +69,40 @@ class ServoMotor:
             midpt_h = (midpt >> 8) & PCA9685.SERVO_H_MASK
             self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL, 0)
             self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+1, 0)
-            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+2, PCA9685.SERVO_ON_OFF | midpt_h)
-            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+3, midpt_l)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+2, midpt_l)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+3, PCA9685.SERVO_ON_OFF | midpt_h)
+            
         
 
 
     def turnOff(self) -> None:
-        if self.CHL is not -1:
-            reg = self.i2cbus.read_byte_data(PCA9685.ADDR, self.CHL+2)
-            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+2, reg | PCA9685.SERVO_ON_OFF)
+        if self.CHL != -1:
+            reg = self.i2cbus.read_byte_data(PCA9685.ADDR, self.CHL+3)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+3, reg | PCA9685.SERVO_ON_OFF)
 
 
 
     def turnOn(self) -> None:
-        if self.CHL is not -1:
-            reg = self.i2cbus.read_byte_data(PCA9685.ADDR, self.CHL+2)
-            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+2, reg & (~PCA9685.SERVO_ON_OFF))
+        if self.CHL != -1:
+            reg = self.i2cbus.read_byte_data(PCA9685.ADDR, self.CHL+3)
+            self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+3, reg & (~PCA9685.SERVO_ON_OFF))
 
 
 
     def setPosition(self, pos:float) -> None:
         """Set servo position from 0 to 100 (float)"""
-        if self.CHL is not -1:
+        if self.CHL != -1:
+            if pos > 100:
+                pos = 100
+            elif pos < 0:
+                pos = 0
+
             offval:int = round(pos * self.K + self.OFF)
+            print("Setting position " + str(pos) + "%: " + str(offval))
+            offval_l = offval & PCA9685.SERVO_L_MASK
+            offval_h = (offval >> 8) & PCA9685.SERVO_H_MASK
+            data = [0, 0, offval_l, offval_h]
+            self.i2cbus.write_i2c_block_data(PCA9685.ADDR, self.CHL, data)
 
 ###
 # servo test:

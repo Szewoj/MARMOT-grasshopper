@@ -1,4 +1,5 @@
 import Actuator.PCA9685 as PCA9685
+import Actuator.motor as servo
 
 SERVO_MIN = 0.8 #ms
 SERVO_MAX = 2.2 #ms
@@ -11,13 +12,9 @@ def calcPositionOffset(freq):
 
 def main():
     # TODO init PCA9685, setup one servo, turn in sinus wave
-    freq = 50 #Hz
-    K = calcPositionMagnifier(freq)
-    OFF = calcPositionOffset(freq)
+    servo.initPCA9685(freq=50)
 
-    print("  0% -> " + str(round(OFF)))
-    print(" 50% -> " + str(round(50*K + OFF)))
-    print("100% -> " + str(round(100*K + OFF)))
+    motor1 = servo.ServoMotor(10)
 
 
 if __name__ == "__main__":

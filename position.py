@@ -47,7 +47,7 @@ def main():
         logger.log(reading.getList())
         #reading.print()
         t_then = t_now
-        time.sleep(0.05)
+        time.sleep(0.005)
 
     imu.close()
     logger.close()

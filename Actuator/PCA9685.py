@@ -75,40 +75,39 @@ def getChannelAddr(ch:int):
     * PWM_XX_OFF_L [+2]
     * PWM_XX_OFF_H [+3]"""
 
-    match(ch):
-        case 0:
-            return PWM_00_REG
-        case 1:
-            return PWM_01_REG
-        case 2:
-            return PWM_02_REG
-        case 3:
-            return PWM_03_REG
-        case 4:
-            return PWM_04_REG
-        case 5:
-            return PWM_05_REG
-        case 6:
-            return PWM_06_REG
-        case 7:
-            return PWM_07_REG
-        case 8:
-            return PWM_08_REG
-        case 9:
-            return PWM_09_REG
-        case 10:
-            return PWM_10_REG
-        case 11:
-            return PWM_11_REG
-        case 12:
-            return PWM_12_REG
-        case 13:
-            return PWM_13_REG
-        case 14:
-            return PWM_14_REG
-        case 15:
-            return PWM_15_REG
-        case _:
-            print("error: unknown PWM channel")
-            return -1
+    if ch == 0:
+        return PWM_00_REG
+    elif ch == 1:
+        return PWM_01_REG
+    elif ch == 2:
+        return PWM_02_REG
+    elif ch == 3:
+        return PWM_03_REG
+    elif ch == 4:
+        return PWM_04_REG
+    elif ch == 5:
+        return PWM_05_REG
+    elif ch == 6:
+        return PWM_06_REG
+    elif ch == 7:
+        return PWM_07_REG
+    elif ch == 8:
+        return PWM_08_REG
+    elif ch == 9:
+        return PWM_09_REG
+    elif ch == 10:
+        return PWM_10_REG
+    elif ch == 11:
+        return PWM_11_REG
+    elif ch == 12:
+        return PWM_12_REG
+    elif ch == 13:
+        return PWM_13_REG
+    elif ch == 14:
+        return PWM_14_REG
+    elif ch == 15:
+        return PWM_15_REG
+    else:
+        print("error: unknown PWM channel")
+        return -1
         
