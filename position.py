@@ -2,7 +2,7 @@ import Logger, time, ahrs
 import Sensor.imu6dof as IMU
 import numpy as np
 
-from InterruptibleLoop import InterruptibleLoop
+from misc.InterruptibleLoop import InterruptibleLoop
 
 class OrientationReader:
     """Class for automatic orientation filtering. Runs on its own thread"""

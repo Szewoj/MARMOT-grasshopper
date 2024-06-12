@@ -1,7 +1,20 @@
+import struct
 from inputs import get_gamepad
-import math
-import threading
-import sys
+import math, socket, threading
+from time import sleep
+from misc.InterruptibleLoop import InterruptibleLoop
+
+MARMOT_IP = 'localhost'#'192.168.100.101'
+MARMOT_C_PORT = 5733
+
+
+def deadzone(input:float, deadzone):
+    if input > 0:
+        return max(0, (input - deadzone) / (1. - deadzone))
+    else:
+        return min(0, (input + deadzone) / (1. - deadzone))
+
+
 
 class XboxController:
     # XboxController class by Brian Zier and Kevin Hughes. (2017 MIT-license)
@@ -38,11 +51,11 @@ class XboxController:
 
 
     def read(self):
-        xL = self.LeftJoystickX
-        yL = self.LeftJoystickY
-        xR = self.RightJoystickX
-        yR = self.RightJoystickY
-        trig = self.RightTrigger - self.LeftTrigger
+        xL = deadzone(self.LeftJoystickX, 0.2)
+        yL = deadzone(self.LeftJoystickY, 0.2)
+        xR = deadzone(self.RightJoystickX, 0.2)
+        yR = deadzone(self.RightJoystickY, 0.2)
+        trig = deadzone(self.RightTrigger, 0.07) - deadzone(self.LeftTrigger, 0.07)
 
         # translate to mobile base control signals:
         throttle = round(trig*100)
@@ -109,14 +122,23 @@ class XboxController:
 
 def main():
     joy = XboxController()
-    try:
-        while True:
-            print(joy.read())
-    except KeyboardInterrupt:
-        print('Program closing...')
-        # do stuff
-        sys.exit(0)
+    loop = InterruptibleLoop()
 
+    try:
+        s:socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(0.5)
+        s.connect((MARMOT_IP, MARMOT_C_PORT))
+        
+        while loop.loop_again:
+            sleep(0.1)
+            data = joy.read()
+            byte_data = struct.pack('!%sb' % len(data), *data)
+            s.send(byte_data)
+
+    except socket.error:
+        print('Lost connection, exiting...')
+    finally:
+        s.close()
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 import socket, struct
 import queue, threading
 
-from InterruptibleLoop import InterruptibleLoop
+from misc.InterruptibleLoop import InterruptibleLoop
 
 
 class TCPLogger:
@@ -44,6 +44,7 @@ class TCPLogger:
 
             self._queue = queue.Queue(5)
             self._setConnection()
+            self.conn.settimeout(1)
 
             while self._thread_loop:
 
@@ -54,10 +55,9 @@ class TCPLogger:
                     continue
 
                 # send data from queue through socket
-
-                bytes = struct.pack('!%sd' % len(data), *data)
+                byte_data = struct.pack('!%sd' % len(data), *data)
                 try:
-                    self.conn.send(bytes)
+                    self.conn.send(byte_data)
                 except socket.error as e:
                     # Failed sending data, reconnect socket
                     print("Socket disconnected!")

@@ -1,5 +1,5 @@
 import Actuator.PCA9685 as PCA9685
-import Actuator.motor as servo
+import Actuator.servo as servo
 
 SERVO_MIN = 0.8 #ms
 SERVO_MAX = 2.2 #ms
