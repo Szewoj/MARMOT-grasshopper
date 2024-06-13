@@ -77,8 +77,8 @@ class Imu:
 
         # init LSM6DS3:
 
-        xl_settings = LSM6DS3.XL_ODR_416 | LSM6DS3.XL_FS_4
-        g_settings  = LSM6DS3.G_ODR_416 | LSM6DS3.G_FS_1000
+        xl_settings = LSM6DS3.XL_ODR_208 | LSM6DS3.XL_FS_4
+        g_settings  = LSM6DS3.G_ODR_208 | LSM6DS3.G_FS_1000
 
         self.i2cBus.write_byte_data(LSM6DS3.ADDR, LSM6DS3.CTRL1_XL, xl_settings)
         self.i2cBus.write_byte_data(LSM6DS3.ADDR, LSM6DS3.CTRL2_G, g_settings)

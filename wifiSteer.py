@@ -4,7 +4,7 @@ import math, socket, threading
 from time import sleep
 from misc.InterruptibleLoop import InterruptibleLoop
 
-MARMOT_IP = 'localhost'#'192.168.100.101'
+MARMOT_IP = '192.168.1.101'
 MARMOT_C_PORT = 5733
 
 

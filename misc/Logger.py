@@ -6,9 +6,11 @@ from misc.InterruptibleLoop import InterruptibleLoop
 
 class TCPLogger:
 
-    def __init__(self, host='0.0.0.0', port=6000) -> None:
+    def __init__(self, host='0.0.0.0', port=6000, skip=10) -> None:
         self.host = host
         self.port = port
+        self.skip = skip
+        self.cntr = 0
 
         self.s:socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -103,7 +105,11 @@ class TCPLogger:
     def log(self,data):
         if self.isConnected():
             try:
-                self._queue.put_nowait(data)
+                if self.cntr == 0:
+                    self._queue.put_nowait(data)
+                    self.cntr = self.skip
+                else:
+                    self.cntr -= 1
             except queue.Full as e:
                 return
 

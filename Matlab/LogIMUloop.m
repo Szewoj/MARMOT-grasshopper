@@ -16,7 +16,7 @@ function readingTable = LogIMUloop(maxLoop, posePlot, ...
         RotYLine (1,1) {mustBeA(RotYLine, "matlab.graphics.animation.AnimatedLine")}
     end
 
-    startTime = posixtime(datetime('now')) - 3600;
+    startTime = posixtime(datetime('now'));
 
     readingTable = initIMUTable();
     
@@ -29,6 +29,12 @@ function readingTable = LogIMUloop(maxLoop, posePlot, ...
         data = read(s,11,"double");
     
         timestamp = data(1) - startTime;
+
+        % Calculate time difference
+        while timestamp < 0
+            startTime = startTime - 3600;
+            timestamp = data(1) - startTime;
+        end
     
         addpoints(GyroXLine, timestamp, data(2));
         addpoints(GyroYLine, timestamp, data(3));
