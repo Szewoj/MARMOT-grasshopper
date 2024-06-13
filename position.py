@@ -1,4 +1,4 @@
-import Logger, time, ahrs
+import misc.Logger as Logger, time, ahrs
 import Sensor.imu6dof as IMU
 import numpy as np
 
