@@ -1,6 +1,7 @@
-import misc.Logger as Logger, time, ahrs
+import misc.Logger as Logger, ahrs
 import Sensor.imu6dof as IMU
 import numpy as np
+import misc.synchronizer as synchro
 
 from misc.InterruptibleLoop import InterruptibleLoop
 
@@ -26,18 +27,16 @@ def main():
     orientationFilter.Dt = 0.0048 # 208 Hz
     orientation = np.array([1., 0., 0., 0.])
 
-    # timestamps:
-    t_now = 0
-    t_then = 0
-    dt = 0.0048
+    # synchronizer:
+    sync = synchro.Synchro(orientationFilter.Dt)
+    syncInit = False
 
     while loop.loop_again:
         reading:IMU.Readings = imu.getData()
 
         # update filter timestep
-        t_now = reading.getTimestamp()
-
-        print(t_now - t_then)
+        if not syncInit:
+            sync.start(reading.getTimestamp())
 
         # update imu position
         orientation = orientationFilter.updateIMU(orientation, reading.getGyroSI(), reading.getAccSI())
@@ -45,14 +44,8 @@ def main():
         # log data
         reading.setOrientation(orientation)
         logger.log(reading.getList())
-        #reading.print()
-        t_then = t_now
-        dt = time.time() - t_then
         
-        if dt > 0.00475:
-            continue
-        else:
-            time.sleep(0.00475 - dt)
+        sync.waitNext()
 
     imu.close()
     logger.close()
