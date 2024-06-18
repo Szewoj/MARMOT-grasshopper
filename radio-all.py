@@ -5,7 +5,7 @@
 
 from misc.InterruptibleLoop import InterruptibleLoop
 import socket, struct
-import Actuator.servo as servo
+import Actuator.motors as motors
 
 HOST='0.0.0.0'
 PORT=5733
@@ -16,9 +16,9 @@ def main():
     loop = InterruptibleLoop()
 
     # setup control board:
-    servo.initPCA9685()
+    motors.initPCA9685()
 
-    servoLF = servo.ServoMotor(10)
+    servoLF = motors.ServoMotor(10)
 
     # setup radio server:
     ss:socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,7 +77,7 @@ def main():
             print(inputs)
 
             # set inputs:
-            servoLF.setPosition(inputs[2])
+            servoLF.setOutputAI(inputs[2])
     
 
     # clean up after steering:
