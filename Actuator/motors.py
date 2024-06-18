@@ -56,6 +56,8 @@ class GenericMotor(object):
             # check real frequency
             freq = PCA9685.calcFreq(self.i2cbus.read_byte_data(PCA9685.ADDR, PCA9685.PRE_SCALAR))
 
+        print(self.SIGNAL_MAX)
+
         self.K = PRIVATE_calcPositionMagnifier(freq, self.SIGNAL_MIN, self.SIGNAL_MAX)
         """Magnitude ratio to calculate PWM signal length from 0% to 100% input"""
         self.OFF = PRIVATE_calcPositionOffset(freq, self.SIGNAL_MIN)
@@ -140,8 +142,11 @@ class GenericMotor(object):
 class ServoMotor(GenericMotor):
     """Class for servo motor control for PowerHD 3001HB of active suspension"""
 
-    SERVO_MIN = 0.7 #ms
-    SERVO_MAX = 2.3 #ms
+    SIGNAL_MIN = 0.65 #ms
+    SIGNAL_MAX = 2.35 #ms
+
+    def __init__(self, channel, bus=1, freq=-1) -> None:
+        super(ServoMotor, self).__init__(channel, bus, freq)
     
 ##
 
