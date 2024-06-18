@@ -58,12 +58,12 @@ class XboxController:
         trig = deadzone(self.RightTrigger, 0.07) - deadzone(self.LeftTrigger, 0.07)
 
         # translate to mobile base control signals:
-        throttle = round(trig*100)
-        steering = round(xL*100)
+        throttle = round(trig*50 + 50)
+        steering = round(xL*50 + 50)
 
-        updown = round(yL * 100 / 2)
-        xAxis = round(xR * 100 / 2)
-        yAxis = round(yR * 100 / 2)
+        updown = round(yL * 50)
+        xAxis = round(xR * 50)
+        yAxis = round(yR * 50)
 
         uFL = min(100, max(0, 50 + updown + xAxis - yAxis))
         uFR = min(100, max(0, 50 + updown - xAxis - yAxis))
