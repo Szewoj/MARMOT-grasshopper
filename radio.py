@@ -68,12 +68,7 @@ def main():
             data = struct.unpack('!6c', byte_data)
             byte_data = b''
 
-            inputs = [int.from_bytes(data[0], byteorder='little', signed=True),
-                      int.from_bytes(data[1], byteorder='little', signed=True),
-                      int.from_bytes(data[2], byteorder='little', signed=True),
-                      int.from_bytes(data[3], byteorder='little', signed=True),
-                      int.from_bytes(data[4], byteorder='little', signed=True),
-                      int.from_bytes(data[5], byteorder='little', signed=True)]
+            inputs = [int.from_bytes(data[x], byteorder='little', signed=True) for x in range(6)]
             print(inputs)
 
             # set inputs:

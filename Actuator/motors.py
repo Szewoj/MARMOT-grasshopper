@@ -72,7 +72,7 @@ class GenericMotor(object):
         self.turnedOn = False
         """PWM signal power status"""
 
-        if self.CHL == -1:
+        if self.CHL == PCA9685.PWM_INV_REG:
             print("Could not set channel. Servo init failed!")
         else:
             pt_l = self.lastPos & PCA9685.SERVO_L_MASK
@@ -84,14 +84,14 @@ class GenericMotor(object):
 
 
     def turnOff(self) -> None:
-        if self.CHL != -1 and self.turnedOn:
+        if self.CHL != PCA9685.PWM_INV_REG and self.turnedOn:
             reg = self.i2cbus.read_byte_data(PCA9685.ADDR, self.CHL+3)
             self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+3, reg | PCA9685.SERVO_ON_OFF)
             self.turnedOn = False
 
 
     def turnOn(self) -> None:
-        if self.CHL != -1 and not self.turnedOn:
+        if self.CHL != PCA9685.PWM_INV_REG and not self.turnedOn:
             reg = self.i2cbus.read_byte_data(PCA9685.ADDR, self.CHL+3)
             self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+3, reg & (~PCA9685.SERVO_ON_OFF))
             self.turnedOn = True
@@ -99,7 +99,7 @@ class GenericMotor(object):
 
     def setOutputAI(self, pos:float) -> None:
         """Set servo position from 0% to 100% (float) using I2C Auto Increment."""
-        if self.CHL != -1:
+        if self.CHL != PCA9685.PWM_INV_REG:
             pos = min(100, pos)
             pos = max(0, pos)
 
@@ -120,7 +120,7 @@ class GenericMotor(object):
             - does not require Auto Increment mode to function
             
             It is recomended to use setOutputAI() function, but it requires to set AI bit in PCA9685 MODE1 register."""
-        if self.CHL != -1:
+        if self.CHL != PCA9685.PWM_INV_REG:
             pos = min(100, pos)
             pos = max(0, pos)
 

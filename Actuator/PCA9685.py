@@ -6,6 +6,7 @@ ADDR    = 0x40
 MODE1   = 0x00
 MODE2   = 0x01
 
+PWM_INV_REG = -1
 
 PWM_00_REG  = 0x06
 PWM_01_REG  = 0x0A
