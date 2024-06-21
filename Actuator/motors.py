@@ -147,7 +147,20 @@ class ServoMotor(GenericMotor):
 
     def __init__(self, channel, bus=1, freq=-1) -> None:
         super(ServoMotor, self).__init__(channel, bus, freq)
-    
+
+
+##
+
+class ServoMotorInv(ServoMotor):
+    """Class for inverted servo motor control for PowerHD 3001HB of active suspension"""
+
+    def setOutput(self, pos: float) -> None:
+        pt = 100. - pos
+        return super().setOutput(pt)
+
+    def setOutputAI(self, pos: float) -> None:
+        pt = 100. - pos
+        return super().setOutputAI(pt)
 ##
 
 class BrushedMotor(GenericMotor):
