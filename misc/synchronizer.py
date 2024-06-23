@@ -1,6 +1,6 @@
 import time
 import random
-import InterruptibleLoop
+from . import InterruptibleLoop
 
 class Synchro:
 
@@ -20,10 +20,12 @@ class Synchro:
         t_target = self.timeCounter + self.INTERVAL
         if t_elapsed < t_target:
             self.waitTime = t_target - t_elapsed
+            self.timeCounter += self.INTERVAL
+            time.sleep(self.waitTime)
         else:
             self.waitTime = 0
-        self.timeCounter += self.INTERVAL
-        time.sleep(self.waitTime)
+            self.timeCounter += self.INTERVAL
+            return
 
 
     def getwaitTime(self) -> float:

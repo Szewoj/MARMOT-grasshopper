@@ -1,4 +1,6 @@
-from misc import Logger, InterruptibleLoop, synchronizer
+from misc import Logger 
+from misc import InterruptibleLoop
+from misc import synchronizer
 
 import position
 
@@ -8,7 +10,7 @@ def main():
     poseOR = position.OrientationReader()
     loop = InterruptibleLoop.InterruptibleLoop()
 
-    sync = synchronizer.Synchro(5)
+    sync = synchronizer.Synchro(10)
 
     poseOR.run_async()
 

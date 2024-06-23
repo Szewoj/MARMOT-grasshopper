@@ -28,7 +28,7 @@ class TCPLogger:
     def run(self) -> None:
         self.s.bind((self.host, self.port))
         self.s.listen(1)
-        self.s.settimeout(5)
+        self.s.settimeout(1)
 
         print("Logger thread started!")
 

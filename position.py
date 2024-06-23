@@ -22,7 +22,7 @@ class OrientationReader:
             self.doLog = False
         else:
             self.doLog = True
-            self.logger = Logger.TCPLogger(port)
+            self.logger = Logger.TCPLogger(port=port)
 
         # starting aproximated position of IMU (given the car is on the ground)
         self._orientation = np.array([1., 0., 0., 0.])
@@ -31,7 +31,7 @@ class OrientationReader:
         self._orientationFilter = ahrs.filters.madgwick.Madgwick()
         self._orientationFilter.Dt = 1./freq
 
-        self._synchro = synchro.Synchro(1./freq)
+        self._synchro = synchro.Synchro(freq)
 
         self._loop = False
         """Asynchronous running flag"""
@@ -74,7 +74,8 @@ class OrientationReader:
 
             # update filter timestep
             if not syncInit:
-                self._synchro.start(reading.getTimestamp())
+                self._synchro.start()
+                syncInit = True
 
             # update imu position
             self._orientation = self._orientationFilter.updateIMU(self._orientation, reading.getGyroSI(), reading.getAccSI())
@@ -119,7 +120,8 @@ class OrientationReader:
 
             # update filter timestep
             if not syncInit:
-                self._synchro.start(reading.getTimestamp())
+                self._synchro.start()
+                syncInit = True
 
             # update imu position
             self._orientation = self._orientationFilter.updateIMU(self._orientation, reading.getGyroSI(), reading.getAccSI())
