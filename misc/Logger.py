@@ -44,7 +44,7 @@ class TCPLogger:
             print("Accepted connection from " + str(address))
             print("Logger ready!")
 
-            self._queue = queue.Queue(5)
+            self._queue = queue.Queue(10)
             self._setConnection()
             self.conn.settimeout(1)
 
