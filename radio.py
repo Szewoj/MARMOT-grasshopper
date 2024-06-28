@@ -18,7 +18,8 @@ def main():
     # setup control board:
     motors.initPCA9685()
 
-    servoSteering = motors.GenericMotor(10)
+    servoSteering = motors.GenericMotor(7)
+    brushedMotor = motors.BrushedMotor(8)
 
     # setup radio server:
     ss:socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,7 +32,7 @@ def main():
     while loop.loop_again:
         # reset motors to default
         servoSteering.turnOff()
-
+        brushedMotor.turnOff()
 
         # accept client:
         try:
@@ -73,6 +74,7 @@ def main():
 
             # set inputs:
             servoSteering.setOutputAI(inputs[1])
+            brushedMotor.setOutputAI(inputs[0])
     
 
     # clean up after steering:
@@ -83,6 +85,7 @@ def main():
 
     # reset controls
     servoSteering.turnOff()
+    brushedMotor.turnOff()
 
 if __name__ == '__main__':
     main()
