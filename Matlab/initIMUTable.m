@@ -1,5 +1,5 @@
 function resultTable = initIMUTable()
-%INITRESULTTABLE Init empty table for results
+%INITIMUTABLE Init empty table for results
 
     name_type = [["Time", "datetime"];...
                  ["GyroX", "double"];...

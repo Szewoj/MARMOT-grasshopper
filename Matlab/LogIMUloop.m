@@ -70,6 +70,7 @@ function readingTable = LogIMUloop(maxLoop, posePlot, ...
         tableRow = struct2table(S);
     
         readingTable(i,:) = tableRow;
+        
     
     end
 

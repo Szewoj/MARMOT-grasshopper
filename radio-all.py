@@ -18,8 +18,12 @@ def main():
     # setup control board:
     motors.initPCA9685()
 
-    servoLB = motors.ServoMotor(14)
-    servoRB = motors.ServoMotorInv(15)
+    servoLF = motors.ServoMotor(6)
+    servoRF = motors.ServoMotorInv(5)
+    servoLB = motors.ServoMotorInv(10)
+    servoRB = motors.ServoMotor(11)
+    servoSteering = motors.GenericMotor(7)
+    brushedMotor = motors.BrushedMotor(8)
 
     # setup radio server:
     ss:socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,8 +35,12 @@ def main():
 
     while loop.loop_again:
         # reset motors to default
+        servoLF.turnOff()
+        servoRF.turnOff()
         servoLB.turnOff()
         servoRB.turnOff()
+        servoSteering.turnOff()
+        brushedMotor.turnOff()
 
         # accept client:
         try:
@@ -73,6 +81,11 @@ def main():
             print(inputs)
 
             # set inputs:
+            
+            brushedMotor.setOutputAI(inputs[0])
+            servoSteering.setOutputAI(inputs[1])
+            servoLF.setOutputAI(inputs[2])
+            servoRF.setOutputAI(inputs[3])
             servoLB.setOutputAI(inputs[4])
             servoRB.setOutputAI(inputs[5])
     
@@ -84,8 +97,12 @@ def main():
     ss.close()
 
     # reset controls
+    servoLF.turnOff()
+    servoRF.turnOff()
     servoLB.turnOff()
     servoRB.turnOff()
+    servoSteering.turnOff()
+    brushedMotor.turnOff()
 
 if __name__ == '__main__':
     main()

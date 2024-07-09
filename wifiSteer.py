@@ -51,14 +51,14 @@ class XboxController:
 
 
     def read(self):
-        xL = deadzone(self.LeftJoystickX, 0.2)
+        xL = -deadzone(self.LeftJoystickX, 0.2)
         yL = deadzone(self.LeftJoystickY, 0.2)
         xR = deadzone(self.RightJoystickX, 0.2)
         yR = deadzone(self.RightJoystickY, 0.2)
         trig = deadzone(self.RightTrigger, 0.07) - deadzone(self.LeftTrigger, 0.07)
 
         # translate to mobile base control signals:
-        throttle = round(trig*15 + 50)
+        throttle = round(trig*20 + 50)
         steering = round(xL*50 + 50)
 
         updown = round(yL * 50)
