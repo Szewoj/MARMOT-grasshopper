@@ -51,7 +51,7 @@ class OrientationReader:
         
 
 
-    def getRPY(self) -> np.array:
+    def getRPY(self) -> np.ndarray:
         self._lock.acquire()
         tmp = np.copy(self._atomicOut)
         self._lock.release()

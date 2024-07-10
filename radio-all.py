@@ -18,10 +18,10 @@ def main():
     # setup control board:
     motors.initPCA9685()
 
-    servoLF = motors.ServoMotor(6)
-    servoRF = motors.ServoMotorInv(5)
-    servoLB = motors.ServoMotorInv(10)
-    servoRB = motors.ServoMotor(11)
+    servoLF = motors.ServoMotorInv(6)
+    servoRF = motors.ServoMotor(5)
+    servoLB = motors.ServoMotor(10)
+    servoRB = motors.ServoMotorInv(11)
     servoSteering = motors.GenericMotor(7)
     brushedMotor = motors.BrushedMotor(8)
 
