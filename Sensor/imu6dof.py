@@ -45,13 +45,13 @@ class Readings:
     def getList(self) -> list:
         return [self.timestamp, self.g_x, self.g_y, self.g_z, self.xl_x, self.xl_y, self.xl_z, self.quat_w, self.quat_i, self.quat_j, self.quat_k]
     
-    def getOrientation(self) -> np.array:
+    def getOrientation(self) -> np.ndarray:
         return np.array([self.quat_w, self.quat_i, self.quat_j, self.quat_k])
 
-    def getGyroSI(self) -> np.array:
+    def getGyroSI(self) -> np.ndarray:
         return np.array([self.g_x, self.g_y, self.g_z]) * ahrs.DEG2RAD
     
-    def getAccSI(self) -> np.array:
+    def getAccSI(self) -> np.ndarray:
         return np.array([self.xl_x, self.xl_y, self.xl_z]) * ahrs.MEAN_NORMAL_GRAVITY
 #---
 

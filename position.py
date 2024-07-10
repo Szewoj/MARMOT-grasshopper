@@ -8,6 +8,10 @@ from misc.InterruptibleLoop import InterruptibleLoop
 
 import threading
 
+G_QUAT = ahrs.Quaternion([0., 0., 0., 1.])
+
+ACC_Z_HOLD = 1. - 1./20
+ACC_Z_MOVE = 1./20
 
 class OrientationReader:
     """Class for automatic orientation filtering. Runs on its own thread"""
@@ -26,6 +30,8 @@ class OrientationReader:
 
         # starting aproximated position of IMU (given the car is on the ground)
         self._orientation = np.array([1., 0., 0., 0.])
+        self._quatOrientation = ahrs.Quaternion(self._orientation)
+        self._accZ = 0.
 
         # setup orientation filter:
         self._orientationFilter = ahrs.filters.madgwick.Madgwick()
@@ -38,6 +44,7 @@ class OrientationReader:
 
         # memory protection lock:
         self._atomicOut = np.copy(self._orientation)
+        self._atomicAccZ = 0.
         self._lock = threading.Lock()
 
 
@@ -47,8 +54,14 @@ class OrientationReader:
             return # do not wait to acquire lock
         self._lock.acquire()
         self._atomicOut = np.copy(self._orientation)
+        self._atomicAccZ = self._accZ
         self._lock.release()
         
+
+    def PRIVATE_calculateAccZ(self, accSI:np.ndarray) -> None:
+        self._quatOrientation = ahrs.Quaternion(self._orientation)
+        gRot = ahrs.Quaternion(self._quatOrientation * G_QUAT) * self._quatOrientation.conj
+        self._accZ = self._accZ + self._orientationFilter.Dt * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3])
 
 
     def getRPY(self) -> np.ndarray:
@@ -58,7 +71,14 @@ class OrientationReader:
 
         q = ahrs.Quaternion(tmp)
         return q.to_angles()
+    
 
+    def getAccZ(self) -> float:
+        self._lock.acquire()
+        tmp = self._atomicAccZ
+        self._lock.release()
+
+        return tmp
 
 
     def PRIVATE_run(self) -> None:
@@ -80,6 +100,9 @@ class OrientationReader:
             # update imu position
             self._orientation = self._orientationFilter.updateIMU(self._orientation, reading.getGyroSI(), reading.getAccSI())
             
+            # update Z axis filtered acceleration
+            self.PRIVATE_calculateAccZ(reading.getAccSI())
+
             # update output
             self.PRIVATE_updateOutput()
             
@@ -125,6 +148,9 @@ class OrientationReader:
 
             # update imu position
             self._orientation = self._orientationFilter.updateIMU(self._orientation, reading.getGyroSI(), reading.getAccSI())
+
+            # update Z axis filtered acceleration
+            self.PRIVATE_calculateAccZ(reading.getAccSI())
             
             # log data
             if self.doLog:

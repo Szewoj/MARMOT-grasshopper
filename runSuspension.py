@@ -11,17 +11,21 @@ import position
 def main():
     poseOR = position.OrientationReader()
     loop = InterruptibleLoop.InterruptibleLoop()
+    logger = Logger.TCPLogger(skip=2)
 
     sync = synchronizer.Synchro(10)
 
     poseOR.run_async()
+    logger.run_async()
 
     sync.start()
     while loop.loop_again:
         out = poseOR.getRPY()
+        z = poseOR.getAccZ()
         print(out)
 
-        msg = [time.time(), out[2], out[1], 0., 0., 0., 50., 50., 50., 50.]
+        msg = [time.time(), out[2], out[1], z, 0., 0., 50., 50., 50., 50.]
+        logger.log(msg)
 
         sync.waitNext()
 
