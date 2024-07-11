@@ -22,9 +22,9 @@ def main():
     while loop.loop_again:
         out = poseOR.getRPY()
         z = poseOR.getAccZ()
-        print(out)
+        print(z)
 
-        msg = [time.time(), out[2], out[1], z, 0., 0., 50., 50., 50., 50.]
+        msg = [time.time(), out[0], out[1], z, 0., 0., 50., 50., 50., 50.]
         logger.log(msg)
 
         sync.waitNext()

@@ -61,7 +61,7 @@ class OrientationReader:
     def PRIVATE_calculateAccZ(self, accSI:np.ndarray) -> None:
         self._quatOrientation = ahrs.Quaternion(self._orientation)
         gRot = ahrs.Quaternion(self._quatOrientation * G_QUAT) * self._quatOrientation.conj
-        self._accZ = self._accZ + self._orientationFilter.Dt * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3])
+        self._accZ = ACC_Z_HOLD * self._accZ + ACC_Z_MOVE * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3])
 
 
     def getRPY(self) -> np.ndarray:

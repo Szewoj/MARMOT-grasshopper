@@ -33,6 +33,7 @@ legend(ax12, ["acc x", "acc y", "acc Z"], 'Location','northwest')
 % Figure 2
 
 f2 = figure(2);
+clf(f2)
 posePlot = poseplot(quaternion([1 0 0 0]));
 ax2 = gca;
 ax2.XDir = "normal";
@@ -46,6 +47,7 @@ zlabel("Z");
 % Figure 2
 
 f3 = figure(3);
+clf(f3)
 ax3 = gca;
 
 title(ax3, 'Rotation')
@@ -57,7 +59,7 @@ grid(ax3, "on")
 
 legend(ax3, ["Rotation X", "Rotation Y"], 'Location','northwest')
 
-readings = LogIMUloop(10000, ...
+readings = LogIMUloop(Nsize, ...
     posePlot, GyroXLine, GyroYLine, GyroZLine, AccXLine, AccYLine, AccZLine, RotXLine, RotYLine);
 
 

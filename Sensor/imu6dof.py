@@ -110,9 +110,9 @@ class Imu:
                         toSigned16(data[0]  | (data[1] << 8)) * 1000 / 0x7fff - LSM6DS3.G_FS_1000_DRIFT[0],
                         toSigned16(data[2]  | (data[3] << 8)) * 1000 / 0x7fff - LSM6DS3.G_FS_1000_DRIFT[1],
                         toSigned16(data[4]  | (data[5] << 8)) * 1000 / 0x7fff - LSM6DS3.G_FS_1000_DRIFT[2],
-                        toSigned16(data[6]  | (data[7] << 8)) * 4   / 0x7fff,
-                        toSigned16(data[8]  | (data[9] << 8)) * 4   / 0x7fff,
-                        toSigned16(data[10] | (data[11] << 8))* 4   / 0x7fff
+                        toSigned16(data[6]  | (data[7] << 8)) * 4   / 0x7fff  * LSM6DS3.XL_FS_4_RESCALE[0],
+                        toSigned16(data[8]  | (data[9] << 8)) * 4   / 0x7fff  * LSM6DS3.XL_FS_4_RESCALE[1],
+                        toSigned16(data[10] | (data[11] << 8))* 4   / 0x7fff  * LSM6DS3.XL_FS_4_RESCALE[2]
                         )
 
         return readings
