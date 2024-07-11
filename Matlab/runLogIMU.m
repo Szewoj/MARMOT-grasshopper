@@ -44,7 +44,7 @@ xlabel("X");
 ylabel("Y");
 zlabel("Z");
 
-% Figure 2
+% Figure 3
 
 f3 = figure(3);
 clf(f3)

@@ -50,8 +50,6 @@ function readingTable = LogIMUloop(maxLoop, posePlot, ...
         q2 = quaternion(eul2quat(rpy,"ZYX"));
         set(posePlot,Orientation=q2);
 
-        addpoints
-
         addpoints(RotXLine, timestamp, rpy(3));
         addpoints(RotYLine, timestamp, rpy(2));
         
