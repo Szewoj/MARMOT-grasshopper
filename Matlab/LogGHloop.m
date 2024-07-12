@@ -28,7 +28,7 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
 
     startTime = posixtime(datetime('now'));
 
-    readingTable = initIMUTable();
+    readingTable = initGhTable();
     
     
     % Create tcp socket

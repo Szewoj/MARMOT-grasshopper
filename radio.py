@@ -73,8 +73,9 @@ def main():
             print(inputs)
 
             # set inputs:
-            servoSteering.setOutputAI(inputs[1])
+            
             brushedMotor.setOutputAI(inputs[0])
+            servoSteering.setOutputAI(inputs[1])
     
 
     # clean up after steering:

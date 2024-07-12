@@ -97,22 +97,27 @@ class GenericMotor(object):
             self.turnedOn = True
 
 
-    def setOutputAI(self, pos:float) -> None:
+    def setOutputAI(self, pos:float) -> float:
         """Set servo position from 0% to 100% (float) using I2C Auto Increment."""
         if self.CHL != PCA9685.PWM_INV_REG:
-            pos = min(100, pos)
-            pos = max(0, pos)
+            cpos = min(100, max(0, pos))
 
-            pwm_pt:int = round(pos * self.K + self.OFF)
+            pwm_pt:int = round(cpos * self.K + self.OFF)
 
             if not self.turnedOn or abs(pwm_pt - self.lastPos) > 1:
-                print("Setting position " + str(pos) + "%: " + str(pwm_pt))
+                print("Setting position " + str(cpos) + "%: " + str(pwm_pt))
                 pwm_pt_l = pwm_pt & PCA9685.SERVO_L_MASK
                 pwm_pt_h = (pwm_pt >> 8) & PCA9685.SERVO_H_MASK
                 data = [0, 0, pwm_pt_l, pwm_pt_h]
                 self.i2cbus.write_i2c_block_data(PCA9685.ADDR, self.CHL, data)
                 self.turnedOn = True
                 self.lastPos = pwm_pt
+            
+            # for back-calculation
+            if cpos != pos:
+                return pos - cpos
+            else:
+                return 0.
 
 
     def setOutput(self, pos:float) -> None:
@@ -121,13 +126,12 @@ class GenericMotor(object):
             
             It is recomended to use setOutputAI() function, but it requires to set AI bit in PCA9685 MODE1 register."""
         if self.CHL != PCA9685.PWM_INV_REG:
-            pos = min(100, pos)
-            pos = max(0, pos)
+            cpos = min(100, max(0, pos))
 
-            pwm_pt:int = round(pos * self.K + self.OFF)
+            pwm_pt:int = round(cpos * self.K + self.OFF)
 
             if not self.turnedOn or abs(pwm_pt - self.lastPos) > 1:
-                print("Setting position " + str(pos) + "%: " + str(pwm_pt))
+                print("Setting position " + str(cpos) + "%: " + str(pwm_pt))
                 pwm_pt_l = pwm_pt & PCA9685.SERVO_L_MASK
                 pwm_pt_h = (pwm_pt >> 8) & PCA9685.SERVO_H_MASK
                 self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL, 0)
@@ -136,6 +140,12 @@ class GenericMotor(object):
                 self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL+3, PCA9685.SERVO_ON_OFF | pwm_pt_h)
                 self.turnedOn = True
                 self.lastPos = pwm_pt
+
+            # for back-calculation
+            if cpos != pos:
+                return pos - cpos
+            else:
+                return 0.
 
 ##
 
@@ -154,11 +164,11 @@ class ServoMotor(GenericMotor):
 class ServoMotorInv(ServoMotor):
     """Class for inverted servo motor control for PowerHD 3001HB of active suspension"""
 
-    def setOutput(self, pos: float) -> None:
+    def setOutput(self, pos: float) -> float:
         pt = 100. - pos
         return super().setOutput(pt)
 
-    def setOutputAI(self, pos: float) -> None:
+    def setOutputAI(self, pos: float) -> float:
         pt = 100. - pos
         return super().setOutputAI(pt)
 ##
