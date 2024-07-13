@@ -47,7 +47,7 @@ class PID2D:
             print("Error vector must have two values!")
         self._ek[:] = e.reshape((1,2))
 
-        self._uP[:] = self._ek @ self._uP
+        self._uP[:] = self._ek @ self._Kp
 
         self._uOut[:] = self._uP
         return self._uOut

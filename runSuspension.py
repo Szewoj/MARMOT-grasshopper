@@ -45,7 +45,8 @@ def main():
     sync = synchronizer.Synchro(10)
     
     # regulation components:
-    u = np.empty((1,4)).fill(50.)
+    u = np.empty((1,4))
+    u.fill(50.)
     e = np.empty((1,2))
     uPID = np.empty((1,2))
     pid2d = PID2D(Dt=0.1, Kp_xy=(.0, .2))
