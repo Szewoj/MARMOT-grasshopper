@@ -6,11 +6,13 @@ import time
 from Actuator.motors import ServoMotor, ServoMotorInv
 import position
 from Regulation.Splitter import Splitter
+from Regulation.Algorithms import PID2D
 
 class Suspension:
     """Suspension class for batch servo motor management."""
 
     def __init__(self) -> None:
+        self._uArr = np.empty(4)
         self.uFL = ServoMotorInv(6)
         self.uFR = ServoMotor(5)
         self.uBL = ServoMotor(10)
@@ -26,10 +28,11 @@ class Suspension:
         if outputArray.size != 4:
             print("Servo output array should must contain 4 output values.")
             return
-        bcFL = self.uFL.setOutputAI(outputArray[0])
-        bcFR = self.uFR.setOutputAI(outputArray[1])
-        bcBL = self.uBL.setOutputAI(outputArray[2])
-        bcBR = self.uBR.setOutputAI(outputArray[3])
+        self._uArr[:] = np.squeeze(np.asarray(outputArray))
+        bcFL = self.uFL.setOutputAI(self._uArr[0])
+        bcFR = self.uFR.setOutputAI(self._uArr[1])
+        bcBL = self.uBL.setOutputAI(self._uArr[2])
+        bcBR = self.uBR.setOutputAI(self._uArr[3])
 
         return (bcFL, bcFR, bcBL, bcBR)
 
@@ -42,9 +45,10 @@ def main():
     sync = synchronizer.Synchro(10)
     
     # regulation components:
-    u = np.array([50., 50., 50., 50.])
-    uPID = np.empty(2)
-    pid2d = None
+    u = np.empty((1,4)).fill(50.)
+    e = np.empty((1,2))
+    uPID = np.empty((1,2))
+    pid2d = PID2D(Dt=0.1, Kp_xy=(.0, .2))
     pidSplitter = Splitter()
 
     # start threads
@@ -64,10 +68,14 @@ def main():
 
         angXY = [100*out[0], 100*out[1]] #[roll, pitch]
 
+        e[0][0] = -angXY[0]
+        e[0][1] = -angXY[1]
 
-        # uPID = pid2d.update(...)
-        # u[:] = u + pidSplitter.splitEven(uPID)
 
+        uPID[:] = pid2d.update(e)
+        u[:] = u + pidSplitter.splitEven(uPID)
+
+        suspension.setOutputs(u)
 
         msg = [time.time()] + angXY + [z, 0., 0.] + u.tolist()
         logger.log(msg)
