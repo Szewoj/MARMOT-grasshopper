@@ -1,7 +1,7 @@
 clear;
 
 % Prepare result table
-Nsize = 100;
+Nsize = 100000;
 
 % Prepare figures
 

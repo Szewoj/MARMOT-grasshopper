@@ -3,7 +3,7 @@ from misc import InterruptibleLoop
 from misc import synchronizer
 import numpy as np
 import time
-from Actuator.motors import ServoMotor, ServoMotorInv
+from Actuator import motors
 import position
 from Regulation.Splitter import Splitter
 from Regulation.Algorithms import PID2D
@@ -13,10 +13,10 @@ class Suspension:
 
     def __init__(self) -> None:
         self._uArr = np.empty(4)
-        self.uFL = ServoMotorInv(6)
-        self.uFR = ServoMotor(5)
-        self.uBL = ServoMotor(10)
-        self.uBR = ServoMotorInv(11)
+        self.uFL = motors.ServoMotorInv(6)
+        self.uFR = motors.ServoMotor(5)
+        self.uBL = motors.ServoMotor(10)
+        self.uBR = motors.ServoMotorInv(11)
 
     def turnOff(self) -> None:
         self.uFL.turnOff()
@@ -49,7 +49,7 @@ def main():
     u.fill(50.)
     e = np.empty((1,2))
     uPID = np.empty((1,2))
-    pid2d = PID2D(Dt=0.1, Kp_xy=(.0, .2))
+    pid2d = PID2D(Dt=0.1, Kp_xy=(4., 4.))
     pidSplitter = Splitter()
 
     # start threads
