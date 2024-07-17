@@ -105,7 +105,7 @@ class GenericMotor(object):
             pwm_pt:int = round(cpos * self.K + self.OFF)
 
             if not self.turnedOn or abs(pwm_pt - self.lastPos) > 1:
-                print("Setting position " + str(cpos) + "%: " + str(pwm_pt))
+                #print("Setting position " + str(cpos) + "%: " + str(pwm_pt))
                 pwm_pt_l = pwm_pt & PCA9685.SERVO_L_MASK
                 pwm_pt_h = (pwm_pt >> 8) & PCA9685.SERVO_H_MASK
                 data = [0, 0, pwm_pt_l, pwm_pt_h]
@@ -131,7 +131,7 @@ class GenericMotor(object):
             pwm_pt:int = round(cpos * self.K + self.OFF)
 
             if not self.turnedOn or abs(pwm_pt - self.lastPos) > 1:
-                print("Setting position " + str(cpos) + "%: " + str(pwm_pt))
+                #print("Setting position " + str(cpos) + "%: " + str(pwm_pt))
                 pwm_pt_l = pwm_pt & PCA9685.SERVO_L_MASK
                 pwm_pt_h = (pwm_pt >> 8) & PCA9685.SERVO_H_MASK
                 self.i2cbus.write_byte_data(PCA9685.ADDR, self.CHL, 0)
