@@ -1,5 +1,6 @@
 # LSM6DS3 address:
 ADDR = 0x6A
+BUS = 1
 
 # LSM6DS3 registers:
 WHO_AM_I    = 0x0F

@@ -64,7 +64,7 @@ class Imu:
 
     ###
         
-    def open(self, bus=1) -> bool:
+    def open(self, bus=LSM6DS3.BUS) -> bool:
         self.i2cBus = smbus2.SMBus(bus)
         flag = self.i2cBus.read_byte_data(LSM6DS3.ADDR, LSM6DS3.WHO_AM_I)
         

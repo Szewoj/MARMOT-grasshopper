@@ -1,5 +1,6 @@
 # PCA9685 addresses:
 ADDR    = 0x40
+BUS     = 6
 
 # PCA9685 registers:
 
