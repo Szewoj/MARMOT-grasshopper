@@ -65,6 +65,7 @@ def main():
 
     pid2d = Algorithms.PID2D(Dt=1./F_SUSPENSION, Kp_xy=PID_KP, Ki_xy=PID_KI, Td_xy=PID_TD, Kb_xy=PID_KP)
     pidSplitter = Splitter.Splitter()
+    pidEqualizer = Splitter.Equalizer()
 
     # start threads
     poseOR.run_async()
@@ -86,7 +87,10 @@ def main():
         e[0][0] = -angXY[0]
         e[1][0] = -angXY[1]
 
-        # calculate 
+        # equalize output
+        u[:] = u * pidEqualizer.center(u)
+
+        # calculate output:
         uPID[:] = pid2d.update(e)
         u[:] = u + pidSplitter.splitEven(uPID)
         

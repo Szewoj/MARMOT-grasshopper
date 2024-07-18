@@ -63,6 +63,24 @@ class Splitter:
         return self.split(dUpid, (.5,.5))
     
 
+
+class Equalizer:
+    """
+    Class for centering mean motor output in case it drifts.
+    Implemented as simple P algorithm.
+    """
+
+    CENTERPOINT = 50.0
+    KP = 0.1
+
+    def __init__(self) -> None:
+        self._dU = np.empty((4,1))
+
+    def center(self, uOut:np.ndarray) -> np.ndarray:
+        self._dU[:] = np.clip(Equalizer.KP * (uOut - Equalizer.CENTERPOINT), -2, 2)
+
+
+
 def main() -> None:
     splitter = Splitter()
 
