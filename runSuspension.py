@@ -88,7 +88,7 @@ def main():
         e[1][0] = -angXY[1]
 
         # equalize output
-        u[:] = u * pidEqualizer.center(u)
+        u[:] = u + pidEqualizer.center(u)
 
         # calculate output:
         uPID[:] = pid2d.update(e)

@@ -78,6 +78,7 @@ class Equalizer:
 
     def center(self, uOut:np.ndarray) -> np.ndarray:
         self._dU[:] = np.clip(Equalizer.KP * (uOut - Equalizer.CENTERPOINT), -2, 2)
+        return self._dU
 
 
 
