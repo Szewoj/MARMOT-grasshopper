@@ -5,15 +5,11 @@ import numpy as np
 import time
 from Actuator import motors
 import position
-from Regulation import Splitter, Algorithms
+from Regulation import Splitter, Algorithms, Parameters
 
 F_SUSPENSION = 10. # Hz
 
-PID_KP = (0., 0.)
-PID_KI = (.2, .2)
-PID_TD = (0., 0.)
-PID_KB = (1.5 * PID_KI[0], 1.5 * PID_KI[1])
-
+REGULATOR = Parameters.PID_P
 
 class Suspension:
     """Suspension class for batch servo motor management."""
@@ -63,7 +59,11 @@ def main():
     uClampPID = np.empty((2,1))
 
 
-    pid2d = Algorithms.PID2D(Dt=1./F_SUSPENSION, Kp_xy=PID_KP, Ki_xy=PID_KI, Td_xy=PID_TD, Kb_xy=PID_KP)
+    pid2d = Algorithms.PID2D(Dt=1./F_SUSPENSION, 
+                             Kp_xy=REGULATOR.P, 
+                             Ki_xy=REGULATOR.I, 
+                             Td_xy=REGULATOR.D, 
+                             Kb_xy=REGULATOR.B)
     pidSplitter = Splitter.Splitter()
     pidEqualizer = Splitter.Equalizer()
 
