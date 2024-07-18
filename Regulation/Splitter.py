@@ -75,9 +75,11 @@ class Equalizer:
 
     def __init__(self) -> None:
         self._dU = np.empty((4,1))
+        self._e = .0
 
     def center(self, uOut:np.ndarray) -> np.ndarray:
-        self._dU[:] = np.clip(Equalizer.KP * (uOut - Equalizer.CENTERPOINT), -2, 2)
+        self._e = Equalizer.CENTERPOINT - np.mean(uOut)
+        self._dU.fill(np.clip(Equalizer.KP * self._e, -2, 2))
         return self._dU
 
 
