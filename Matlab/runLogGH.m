@@ -34,8 +34,8 @@ ax22 = gca;
 subplot(3,1,3);
 ax23 = gca;
 
-title(ax21, 'Angular position around X axis (roll)  [crad]')
-title(ax22, 'Angular position around Y axis (pitch) [crad]')
+title(ax21, 'Angular position around X axis (roll)  [mrad]')
+title(ax22, 'Angular position around Y axis (pitch) [mrad]')
 title(ax23, 'Onboard Z axis acceleration [m/s^2]')
 
 angXLine = animatedline(ax21, "Color", "#0072BD");
@@ -56,7 +56,9 @@ grid(ax23, "on")
 f3 = figure(3);
 clf(f3)
 
-f3.Position = [f3.Position(1), f3.Position(2) - round(f3.Position(4)), 1.2 * f3.Position(3), 2.2 * f3.Position(4)];
+if f3.Position(4) ~= 924
+    f3.Position = [f3.Position(1), f3.Position(2) - round(f3.Position(4)), 1.2 * f3.Position(3), 2.2 * f3.Position(4)];
+end
 
 subplot(4,1,1);
 ax31 = gca;

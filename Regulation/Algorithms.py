@@ -29,7 +29,7 @@ class PID2D:
         self._u_clamp = np.empty((2,1))
 
         self._uP = np.empty((2,1))
-        self._uI = np.empty((2,1))
+        self._uI = np.zeros((2,1))
         self._uD = np.empty((2,1))
         self._uOut = np.empty((2,1))
 

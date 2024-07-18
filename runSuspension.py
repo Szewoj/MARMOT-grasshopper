@@ -3,7 +3,7 @@ from misc import InterruptibleLoop
 from misc import synchronizer
 import numpy as np
 import time
-from Actuator import motors
+import Actuator.motors
 import position
 from Regulation import Splitter, Algorithms, Parameters
 
@@ -17,10 +17,10 @@ class Suspension:
     def __init__(self) -> None:
         self._uArr = np.empty(4)
         self._uClamp = np.empty((4,1))
-        self.uFL = motors.ServoMotorInv(6)
-        self.uFR = motors.ServoMotor(5)
-        self.uBL = motors.ServoMotor(10)
-        self.uBR = motors.ServoMotorInv(11)
+        self.uFL = Actuator.motors.ServoMotorInv(6)
+        self.uFR = Actuator.motors.ServoMotor(5)
+        self.uBL = Actuator.motors.ServoMotor(10)
+        self.uBR = Actuator.motors.ServoMotorInv(11)
 
     def turnOff(self) -> None:
         self.uFL.turnOff()
@@ -54,6 +54,8 @@ def main():
     u.fill(50.)
     e = np.empty((2,1))
     uPID = np.empty((2,1))
+    out = np.empty(3)
+    logAngle = np.empty(2,dtype=float)
 
     uClamp = np.empty((4,1))
     uClampPID = np.empty((2,1))
@@ -79,10 +81,10 @@ def main():
     
     sync.start()
     while loop.loop_again:
-        out = poseOR.getRPY()
+        out[:] = poseOR.getRPY()
         z = poseOR.getAccZ()
 
-        angXY = [100*out[0], 100*out[1]] #[roll, pitch]
+        angXY = [1000*out[0], 1000*out[1]] #[roll, pitch]
 
         e[0][0] = -angXY[0]
         e[1][0] = -angXY[1]
@@ -98,9 +100,15 @@ def main():
         uClamp[:] = suspension.setOutputs(u)
         uClampPID[:] = pidSplitter.join(uClamp)
         pid2d.antiWindup(uClampPID)
+        u[:] = np.clip(u, 0, 100)
 
         # log data to remote
-        msg = [time.time()] + angXY + [z] + uPID.tolist() + u.tolist()
+        logAngle[:] = np.array(angXY, dtype=float)
+        msg = [time.time()] \
+                + logAngle.squeeze().tolist() \
+                + [z] \
+                + uPID.astype(float).squeeze().tolist() \
+                + u.astype(float).squeeze().tolist()
         logger.log(msg)
 
         sync.waitNext()
