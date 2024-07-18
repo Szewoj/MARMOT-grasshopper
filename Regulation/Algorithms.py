@@ -115,7 +115,7 @@ class PID2D:
         if u_clamp.size != 2:
             print("Error vector u_clamp must have two values!")
 
-        self._u_clamp[:] = u_clamp.reshape((1,2))
+        self._u_clamp[:] = u_clamp.reshape((2,1))
         self._uI[:] = self._uI - np.clip(self._Kb @ self._u_clamp, -30, 30)
         
 
