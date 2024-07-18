@@ -17,8 +17,8 @@ class Suspension:
     def __init__(self) -> None:
         self._uArr = np.empty(4)
         self._uClamp = np.empty((4,1))
-        self.uFL = Actuator.motors.ServoMotorInv(6)
-        self.uFR = Actuator.motors.ServoMotor(5)
+        self.uFL = Actuator.motors.ServoMotorInv(6, -5)
+        self.uFR = Actuator.motors.ServoMotor(5, -15)
         self.uBL = Actuator.motors.ServoMotor(10)
         self.uBR = Actuator.motors.ServoMotorInv(11)
 

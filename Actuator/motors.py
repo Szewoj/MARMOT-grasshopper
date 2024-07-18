@@ -153,7 +153,7 @@ class ServoMotor(GenericMotor):
     """Class for servo motor control for PowerHD 3001HB of active suspension"""
 
     SIGNAL_MIN = 0.65 #ms
-    SIGNAL_MAX = 2.40 #ms
+    SIGNAL_MAX = 2.43 #ms
 
     def __init__(self, channel, offset:int=0, bus=PCA9685.BUS, freq=-1) -> None:
         super(ServoMotor, self).__init__(channel, offset, bus, freq)
