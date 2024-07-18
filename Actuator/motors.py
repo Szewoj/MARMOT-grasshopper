@@ -49,7 +49,7 @@ class GenericMotor(object):
     SIGNAL_MIN = 1.0 #ms
     SIGNAL_MAX = 2.0 #ms
 
-    def __init__(self, channel, bus=PCA9685.BUS, freq=-1) -> None:
+    def __init__(self, channel, offset:int=0, bus=PCA9685.BUS, freq=-1) -> None:
         self.i2cbus:smbus2.SMBus = smbus2.SMBus(bus)
         """i2c bus communication object"""
         if freq < 40 or freq > 1000:
@@ -60,7 +60,7 @@ class GenericMotor(object):
 
         self.K = PRIVATE_calcPositionMagnifier(freq, self.SIGNAL_MIN, self.SIGNAL_MAX)
         """Magnitude ratio to calculate PWM signal length from 0% to 100% input"""
-        self.OFF = PRIVATE_calcPositionOffset(freq, self.SIGNAL_MIN)
+        self.OFF = PRIVATE_calcPositionOffset(freq, self.SIGNAL_MIN) + offset
         """Offset to calculate PWM signal length from 0% to 100% input"""
 
         self.CHL = PCA9685.getChannelAddr(channel)
@@ -155,8 +155,8 @@ class ServoMotor(GenericMotor):
     SIGNAL_MIN = 0.65 #ms
     SIGNAL_MAX = 2.40 #ms
 
-    def __init__(self, channel, bus=PCA9685.BUS, freq=-1) -> None:
-        super(ServoMotor, self).__init__(channel, bus, freq)
+    def __init__(self, channel, offset:int=0, bus=PCA9685.BUS, freq=-1) -> None:
+        super(ServoMotor, self).__init__(channel, offset, bus, freq)
 
 
 ##
@@ -175,8 +175,8 @@ class ServoMotorInv(ServoMotor):
 
 class BrushedMotor(GenericMotor):
 
-    def __init__(self, channel, bus=PCA9685.BUS, freq=-1) -> None:
-        super().__init__(channel, bus, freq)
+    def __init__(self, channel, offset:int=0, bus=PCA9685.BUS, freq=-1) -> None:
+        super().__init__(channel, offset, bus, freq)
         super().turnOn()
 
     def turnOff(self) -> None:
