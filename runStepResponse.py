@@ -81,7 +81,7 @@ def main():
 
 
         # preplanned steering trajectory
-        if i == 25:
+        if i == 50:
             print("Step response, dUy = 100")
             uPID[0][0] = 0
             uPID[1][0] = 10
@@ -91,7 +91,7 @@ def main():
             u[2][0] = 100
             u[3][0] = 100
 
-        if i == 50:
+        if i == 100:
             print("Step response, dUy = -100")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -101,7 +101,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 75:
+        if i == 150:
             print("Step response, dUy = -100")
             uPID[0][0] = 0
             uPID[1][0] = -10
@@ -111,7 +111,7 @@ def main():
             u[2][0] = 0
             u[3][0] = 0
         
-        if i == 100:
+        if i == 200:
             print("Step response, dUy = 100")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -121,7 +121,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 125:
+        if i == 250:
             print("Step response, dUx = 100")
             uPID[0][0] = 10
             uPID[1][0] = 0
@@ -131,7 +131,7 @@ def main():
             u[2][0] = 100
             u[3][0] = 0
 
-        if i == 150:
+        if i == 300:
             print("Step response, dUx = -100")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -141,7 +141,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 175:
+        if i == 350:
             print("Step response, dUx = -100")
             uPID[0][0] = -10
             uPID[1][0] = 0
@@ -151,7 +151,7 @@ def main():
             u[2][0] = 0
             u[3][0] = 100
 
-        if i == 200:
+        if i == 400:
             print("Step response, dUx = 100")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -161,7 +161,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 225:
+        if i == 450:
             loop.breakLoop()
 
         suspension.setOutputs(u)
