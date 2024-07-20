@@ -25,9 +25,14 @@ function readingTable = LogIMUloop(maxLoop, posePlot, ...
     s = tcpclient("192.168.1.101",6000,"ByteOrder","big-endian");
     
     for i = 1:maxLoop
-        
-        data = read(s,11,"double");
-    
+       
+        try
+            data = read(s,11,"double");
+        catch e
+            disp("Connection timed out! Closing script...")
+            return
+        end
+
         timestamp = data(1) - startTime;
 
         % Calculate time difference

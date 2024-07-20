@@ -32,11 +32,16 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
     
     
     % Create tcp socket
-    s = tcpclient("192.168.1.101",6000,"ByteOrder","big-endian");
+    s = tcpclient("192.168.1.101",6000,"ByteOrder","big-endian","Timeout",10);
     
     for i = 1:maxLoop
         
-        data = read(s,10,"double");
+        try
+            data = read(s,10,"double");
+        catch e
+            disp("Connection timed out! Closing script...")
+            break
+        end
     
         timestamp = data(1) - startTime;
 

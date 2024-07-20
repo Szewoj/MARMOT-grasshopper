@@ -46,7 +46,7 @@ def main():
     # ready subcomponents:
     loop = InterruptibleLoop.InterruptibleLoop()
     poseOR = position.OrientationReader()
-    logger = Logger.TCPLogger(skip=2)
+    logger = Logger.TCPLogger(skip=0)
     sync = synchronizer.Synchro(F_SUSPENSION)
     
     # regulation components:
@@ -68,8 +68,8 @@ def main():
     suspension = Suspension()
     suspension.turnOff()
 
-    print("Step response starting in 5 second...")
-    time.sleep(5.0)
+    print("Step response starting in 10 seconds...")
+    time.sleep(10.0)
     
     sync.start()
     print("Started!")
@@ -91,7 +91,7 @@ def main():
             u[2][0] = 100
             u[3][0] = 100
 
-        if i == 125:
+        if i == 50:
             print("Step response, dUy = -100")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -101,7 +101,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 225:
+        if i == 75:
             print("Step response, dUy = -100")
             uPID[0][0] = 0
             uPID[1][0] = -10
@@ -111,7 +111,7 @@ def main():
             u[2][0] = 0
             u[3][0] = 0
         
-        if i == 325:
+        if i == 100:
             print("Step response, dUy = 100")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -121,7 +121,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 425:
+        if i == 125:
             print("Step response, dUx = 100")
             uPID[0][0] = 10
             uPID[1][0] = 0
@@ -131,7 +131,7 @@ def main():
             u[2][0] = 100
             u[3][0] = 0
 
-        if i == 525:
+        if i == 150:
             print("Step response, dUx = -100")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -141,7 +141,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 625:
+        if i == 175:
             print("Step response, dUx = -100")
             uPID[0][0] = -10
             uPID[1][0] = 0
@@ -151,7 +151,7 @@ def main():
             u[2][0] = 0
             u[3][0] = 100
 
-        if i == 725:
+        if i == 200:
             print("Step response, dUx = 100")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -160,6 +160,9 @@ def main():
             u[1][0] = 50
             u[2][0] = 50
             u[3][0] = 50
+
+        if i == 225:
+            loop.breakLoop()
 
         suspension.setOutputs(u)
 
