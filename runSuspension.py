@@ -7,9 +7,9 @@ import Actuator.motors
 import position
 from Regulation import Splitter, Algorithms, Parameters
 
-F_SUSPENSION = 20. # Hz
+F_SUSPENSION = 25. # Hz
 
-REGULATOR = Parameters.PID_P
+REGULATOR = Parameters.PID_ZN
 
 class Suspension:
     """Suspension class for batch servo motor management."""
