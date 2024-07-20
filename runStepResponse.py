@@ -5,11 +5,8 @@ import numpy as np
 import time
 import Actuator.motors
 import position
-from Regulation import Splitter, Algorithms, Parameters
 
-F_SUSPENSION = 20. # Hz
-
-REGULATOR = Parameters.PID_P
+F_SUSPENSION = 25. # Hz
 
 class Suspension:
     """Suspension class for batch servo motor management."""
@@ -17,6 +14,9 @@ class Suspension:
     def __init__(self) -> None:
         self._uArr = np.empty(4)
         self._uClamp = np.empty((4,1))
+
+        Actuator.motors.initPCA9685()
+
         self.uFL = Actuator.motors.ServoMotorInv(6, -5)
         self.uFR = Actuator.motors.ServoMotor(5, -15)
         self.uBL = Actuator.motors.ServoMotor(10)
@@ -52,22 +52,12 @@ def main():
     # regulation components:
     u = np.empty((4,1))
     u.fill(50.)
-    e = np.empty((2,1))
-    uPID = np.empty((2,1))
+    uPID = np.zeros((2,1))
+    
     out = np.empty(3)
     logAngle = np.empty(2,dtype=float)
 
-    uClamp = np.empty((4,1))
-    uClampPID = np.empty((2,1))
-
-
-    pid2d = Algorithms.PID2D(Dt=1./F_SUSPENSION, 
-                             Kp_xy=REGULATOR.P, 
-                             Ki_xy=REGULATOR.I, 
-                             Td_xy=REGULATOR.D, 
-                             Kb_xy=REGULATOR.B)
-    pidSplitter = Splitter.Splitter()
-    pidEqualizer = Splitter.Equalizer()
+    i = 0
 
     # start threads
     poseOR.run_async()
@@ -78,8 +68,8 @@ def main():
     suspension = Suspension()
     suspension.turnOff()
 
-    print("Regulation starting in 1 second...")
-    time.sleep(1.0)
+    print("Step response starting in 5 second...")
+    time.sleep(5.0)
     
     sync.start()
     print("Started!")
@@ -89,21 +79,89 @@ def main():
 
         angXY = [1000*out[0], 1000*out[1]] #[roll, pitch]
 
-        e[0][0] = -angXY[0]
-        e[1][0] = -angXY[1]
 
-        # equalize output
-        u[:] = u + pidEqualizer.center(u)
+        # preplanned steering trajectory
+        if i == 25:
+            print("Step response, dUy = 100")
+            uPID[0][0] = 0
+            uPID[1][0] = 10
 
-        # calculate output:
-        uPID[:] = pid2d.update(e)
-        u[:] = u + pidSplitter.splitEven(uPID)
+            u[0][0] = 0
+            u[1][0] = 0
+            u[2][0] = 100
+            u[3][0] = 100
+
+        if i == 125:
+            print("Step response, dUy = -100")
+            uPID[0][0] = 0
+            uPID[1][0] = 0
+
+            u[0][0] = 50
+            u[1][0] = 50
+            u[2][0] = 50
+            u[3][0] = 50
+
+        if i == 225:
+            print("Step response, dUy = -100")
+            uPID[0][0] = 0
+            uPID[1][0] = -10
+
+            u[0][0] = 100
+            u[1][0] = 100
+            u[2][0] = 0
+            u[3][0] = 0
         
-        # anti windup:
-        uClamp[:] = suspension.setOutputs(u)
-        uClampPID[:] = pidSplitter.join(uClamp)
-        pid2d.antiWindup(uClampPID)
-        u[:] = np.clip(u, 0, 100)
+        if i == 325:
+            print("Step response, dUy = 100")
+            uPID[0][0] = 0
+            uPID[1][0] = 0
+
+            u[0][0] = 50
+            u[1][0] = 50
+            u[2][0] = 50
+            u[3][0] = 50
+
+        if i == 425:
+            print("Step response, dUx = 100")
+            uPID[0][0] = 10
+            uPID[1][0] = 0
+
+            u[0][0] = 100
+            u[1][0] = 0
+            u[2][0] = 100
+            u[3][0] = 0
+
+        if i == 525:
+            print("Step response, dUx = -100")
+            uPID[0][0] = 0
+            uPID[1][0] = 0
+
+            u[0][0] = 50
+            u[1][0] = 50
+            u[2][0] = 50
+            u[3][0] = 50
+
+        if i == 625:
+            print("Step response, dUx = -100")
+            uPID[0][0] = -10
+            uPID[1][0] = 0
+
+            u[0][0] = 0
+            u[1][0] = 100
+            u[2][0] = 0
+            u[3][0] = 100
+
+        if i == 725:
+            print("Step response, dUx = 100")
+            uPID[0][0] = 0
+            uPID[1][0] = 0
+
+            u[0][0] = 50
+            u[1][0] = 50
+            u[2][0] = 50
+            u[3][0] = 50
+
+        suspension.setOutputs(u)
 
         # log data to remote
         logAngle[:] = np.array(angXY, dtype=float)
@@ -115,6 +173,11 @@ def main():
         logger.log(msg)
 
         sync.waitNext()
+
+        i += 1
+
+
+
 
     suspension.turnOff()
     poseOR.close()

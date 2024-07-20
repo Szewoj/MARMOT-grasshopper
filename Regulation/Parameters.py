@@ -9,7 +9,7 @@ class PID:
 
 class PID_P(PID):
     """P regulator"""
-    P = (.5, .8)
+    P = (.6, .65)
 
 class PID_I_TEST(PID):
     """I testing parameters"""
