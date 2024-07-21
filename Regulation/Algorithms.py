@@ -11,7 +11,8 @@ class PID2D:
                  Kp_xy:tuple[float, float] = (0., 0.),
                  Ki_xy:tuple[float, float] = (0., 0.),
                  Td_xy:tuple[float, float] = (0., 0.),
-                 Kb_xy:tuple[float, float] = (0., 0.)) -> None:
+                 Kb_xy:tuple[float, float] = (0., 0.),
+                 Kx_xy:tuple[float, float] = (0., 0.)) -> None:
         
         # init PID parameters:
         self._Dt = Dt
@@ -22,6 +23,8 @@ class PID2D:
         self._Td = np.zeros((2,2))  # derivative parameter D
 
         self._Kb = np.zeros((2,2))  # anti-windup parameter for back-calculation algorithm
+
+        self._Kx = np.zeros((2,2))  # crossover correction for PID output
 
         # init calculation variables:
         self._ek = np.empty((2,1))
@@ -37,6 +40,7 @@ class PID2D:
         self.setKi(Ki_xy)
         self.setTd(Td_xy)
         self.setKb(Kb_xy)
+        self.setKx(Kx_xy)
 
         self._TdBlock = True
 
@@ -85,6 +89,15 @@ class PID2D:
             self._Kb[0][0] = Kb_xy[0]
             self._Kb[1][1] = Kb_xy[1]
 
+    def setKx(self, Kx_xy:tuple[float, float]) -> None:
+        """Set crossover correction parameter K_x for two channels."""
+        if len(Kx_xy) != 2:
+            print("Kx_xy parameter must be tuple with two float values!")
+            return
+        else:
+            self._Kx[0][1] = Kx_xy[0]
+            self._Kx[1][0] = Kx_xy[1]
+
 
     def update(self, e:np.ndarray) -> np.ndarray:
         if e.size != 2:
@@ -103,6 +116,10 @@ class PID2D:
 
         self._uOut[:] = self._uP + self._uI + self._uD
         self._uOut[:] = np.clip(self._uOut, -50, 50) # clip output to protect from calculation errors
+
+        # correct outputs by crossover ratio:
+        self._uOut[:] = self._uOut + self._Kx @ self._uOut
+
         return self._uOut
 
 

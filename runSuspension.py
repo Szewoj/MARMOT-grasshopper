@@ -9,7 +9,7 @@ from Regulation import Splitter, Algorithms, Parameters
 
 F_SUSPENSION = 25. # Hz
 
-REGULATOR = Parameters.PID_ZN
+REGULATOR = Parameters.PID_XY
 
 class Suspension:
     """Suspension class for batch servo motor management."""
@@ -17,6 +17,9 @@ class Suspension:
     def __init__(self) -> None:
         self._uArr = np.empty(4)
         self._uClamp = np.empty((4,1))
+
+        Actuator.motors.initPCA9685()
+
         self.uFL = Actuator.motors.ServoMotorInv(6, -5)
         self.uFR = Actuator.motors.ServoMotor(5, -15)
         self.uBL = Actuator.motors.ServoMotor(10)
@@ -65,7 +68,8 @@ def main():
                              Kp_xy=REGULATOR.P, 
                              Ki_xy=REGULATOR.I, 
                              Td_xy=REGULATOR.D, 
-                             Kb_xy=REGULATOR.B)
+                             Kb_xy=REGULATOR.B,
+                             Kx_xy=REGULATOR.X)
     pidSplitter = Splitter.Splitter()
     pidEqualizer = Splitter.Equalizer()
 
