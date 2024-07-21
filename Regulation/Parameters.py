@@ -58,9 +58,18 @@ class PID_Y(PID):
     D = (0, 0.035)
     B = (1.5 * I[0], 1.5 * I[1])
 
-class PID_XY(PID):
-    """Custom experimental PID parameters"""
-    P = (.41, .425)
-    I = (.006, .0064)
-    D = (0.003, 0.0035)
+
+class PID_XY_V1(PID):
+    """Custom experimental PID parameters. (Version: 1)"""
+    P = (.53, .57)
+    I = (.08, .085)
+    D = (0.008, 0.0085)
     B = (1.5 * I[0], 1.5 * I[1])
+
+
+class PID_XY(PID):
+    """Custom experimental PID parameters. (Version: 2)"""
+    P = (.33, .48)
+    I = (0.4, .36)
+    D = (0.01, 0.012)
+    B = (0.1 * I[0], 0.1 * I[1])

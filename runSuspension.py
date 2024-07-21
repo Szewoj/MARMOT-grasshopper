@@ -93,15 +93,15 @@ def main():
 
         angXY = [1000*out[0], 1000*out[1]] #[roll, pitch]
 
-        e[0][0] = -angXY[0]
-        e[1][0] = -angXY[1]
+        e[0][0] = round(-angXY[0],1)
+        e[1][0] = round(-angXY[1],1)
 
         # equalize output
         u[:] = u + pidEqualizer.center(u)
 
         # calculate output:
         uPID[:] = pid2d.update(e)
-        u[:] = u + pidSplitter.splitEven(uPID)
+        u[:] = u + np.round(pidSplitter.splitEven(uPID),1)
         
         # anti windup:
         uClamp[:] = suspension.setOutputs(u)
@@ -115,6 +115,9 @@ def main():
                 + logAngle.squeeze().tolist() \
                 + [z] \
                 + uPID.astype(float).squeeze().tolist() \
+                + pid2d._uP.astype(float).squeeze().tolist() \
+                + pid2d._uI.astype(float).squeeze().tolist() \
+                + pid2d._uD.astype(float).squeeze().tolist() \
                 + u.astype(float).squeeze().tolist()
         logger.log(msg)
 

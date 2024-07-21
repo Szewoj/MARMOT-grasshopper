@@ -1,7 +1,7 @@
 clear;
 
 % Prepare result table
-Nsize = 1000;
+Nsize = 500;
 
 % Angular position setpoints:
 ANG_X_STPT = 0;
@@ -83,7 +83,18 @@ title(ax36, 'Back right wheel u_B_R [%]')
 
 
 pidXLine = animatedline(ax31, "Color", "#0072BD");
+pidXPLine = animatedline(ax31, "Color", "#7E2F8E", "LineStyle","--");
+pidXILine = animatedline(ax31, "Color", "#77AC30", "LineStyle","-.");
+pidXDLine = animatedline(ax31, "Color", "#A2142F", "LineStyle",":");
+
+legend(ax31, {'u_{PID}', 'u_P', 'u_I', 'u_D'},"Location","southwest")
+
 pidYLine = animatedline(ax32, "Color", "#D95319");
+pidYPLine = animatedline(ax32, "Color", "#7E2F8E", "LineStyle","--");
+pidYILine = animatedline(ax32, "Color", "#77AC30", "LineStyle","-.");
+pidYDLine = animatedline(ax32, "Color", "#A2142F", "LineStyle",":");
+
+legend(ax32, {'u_{PID}', 'u_P', 'u_I', 'u_D'},"Location","southwest")
 
 uFLLine = animatedline(ax33, "Color", "#D95319");
 uFRLine = animatedline(ax34, "Color", "#D95319");
@@ -104,5 +115,6 @@ readings = LogGHloop(Nsize, posePlot, ...
     ANG_X_STPT, angXstptLine, angXLine, ...
     ANG_Y_STPT, angYstptLine, angYLine, ...
     accZLine, ...
-    pidXLine, pidYLine, ...
+    pidXLine, pidXPLine, pidXILine, pidXDLine, ...
+    pidYLine, pidYPLine, pidYILine, pidYDLine, ...
     uFLLine, uFRLine, uBLLine, uBRLine);

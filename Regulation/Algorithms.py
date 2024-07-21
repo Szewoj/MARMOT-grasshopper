@@ -108,14 +108,15 @@ class PID2D:
             self._TdBlock = False
             self._ek_1[:] = self._ek
 
-        self._uP[:] = self._Kp @ self._ek
+        self._uP[:] = np.clip(self._Kp @ self._ek, -100, 100)
         self._uI[:] = self._uI + np.clip(self._Dt * (self._Ki @ self._ek), -20, 20) # clip to protect from calculation errors
+        self._uI[:] = np.clip(self._uI, -100, 100) # other values have no sense
         self._uD[:] = (self._Td @ (self._ek - self._ek_1)) / self._Dt
 
         self._ek_1[:] = self._ek
 
         self._uOut[:] = self._uP + self._uI + self._uD
-        self._uOut[:] = np.clip(self._uOut, -50, 50) # clip output to protect from calculation errors
+        self._uOut[:] = np.clip(self._uOut, -100, 100) # clip output to protect from calculation errors
 
         # correct outputs by crossover ratio:
         self._uOut[:] = self._uOut + self._Kx @ self._uOut
@@ -133,7 +134,7 @@ class PID2D:
             print("Error vector u_clamp must have two values!")
 
         self._u_clamp[:] = u_clamp.reshape((2,1))
-        self._uI[:] = self._uI - np.clip(self._Kb @ self._u_clamp, -30, 30)
+        self._uI[:] = self._uI - np.clip(self._Kb @ self._u_clamp, -20, 20)
         
 
 

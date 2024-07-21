@@ -2,7 +2,8 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
     angXstpt, angXstpLine, angXLine, ...
     angYstpt, angYstpLine, angYLine, ...
     accZLine, ...
-    pidXLine, pidYLine, ...
+    pidXLine, pidXPLine, pidXILine, pidXDLine, ...
+    pidYLine, pidYPLine, pidYILine, pidYDLine, ...
     uFLLine, uFRLine, uBLLine, uBRLine)
 %LOGGHLOOP Loop connection to suspension system and poll readings
     arguments
@@ -18,7 +19,14 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
         accZLine (1,1) {mustBeA(accZLine, "matlab.graphics.animation.AnimatedLine")}
 
         pidXLine (1,1) {mustBeA(pidXLine, "matlab.graphics.animation.AnimatedLine")}
+        pidXPLine (1,1) {mustBeA(pidXPLine, "matlab.graphics.animation.AnimatedLine")}
+        pidXILine (1,1) {mustBeA(pidXILine, "matlab.graphics.animation.AnimatedLine")}
+        pidXDLine (1,1) {mustBeA(pidXDLine, "matlab.graphics.animation.AnimatedLine")}
+        
         pidYLine (1,1) {mustBeA(pidYLine, "matlab.graphics.animation.AnimatedLine")}
+        pidYPLine (1,1) {mustBeA(pidYPLine, "matlab.graphics.animation.AnimatedLine")}
+        pidYILine (1,1) {mustBeA(pidYILine, "matlab.graphics.animation.AnimatedLine")}
+        pidYDLine (1,1) {mustBeA(pidYDLine, "matlab.graphics.animation.AnimatedLine")}
 
         uFLLine (1,1) {mustBeA(uFLLine, "matlab.graphics.animation.AnimatedLine")}
         uFRLine (1,1) {mustBeA(uFRLine, "matlab.graphics.animation.AnimatedLine")}
@@ -37,7 +45,7 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
     for i = 1:maxLoop
         
         try
-            data = read(s,10,"double");
+            data = read(s,16,"double");
         catch e
             disp("Connection timed out! Closing script...")
             break
@@ -57,10 +65,16 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
         S.accZ   = data(4);
         S.PID_X  = data(5);
         S.PID_Y  = data(6);
-        S.uFL    = data(7);
-        S.uFR    = data(8);
-        S.uBL    = data(9);
-        S.uBR    = data(10);
+        S.PID_X_P= data(7);
+        S.PID_Y_P= data(8);
+        S.PID_X_I= data(9);
+        S.PID_Y_I= data(10);
+        S.PID_X_D= data(11);
+        S.PID_Y_D= data(12);
+        S.uFL    = data(13);
+        S.uFR    = data(14);
+        S.uBL    = data(15);
+        S.uBR    = data(16);
 
 
         addpoints(angXstpLine, timestamp, angXstpt);
@@ -72,7 +86,14 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
         addpoints(accZLine, timestamp, S.accZ);
 
         addpoints(pidXLine, timestamp, S.PID_X);
+        addpoints(pidXPLine, timestamp, S.PID_X_P);
+        addpoints(pidXILine, timestamp, S.PID_X_I);
+        addpoints(pidXDLine, timestamp, S.PID_X_D);
+
         addpoints(pidYLine, timestamp, S.PID_Y);
+        addpoints(pidYPLine, timestamp, S.PID_Y_P);
+        addpoints(pidYILine, timestamp, S.PID_Y_I);
+        addpoints(pidYDLine, timestamp, S.PID_Y_D);
 
         addpoints(uFLLine, timestamp, S.uFL);
         addpoints(uFRLine, timestamp, S.uFR);
@@ -80,7 +101,7 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
         addpoints(uBRLine, timestamp, S.uBR);
     
 
-        ypr = [0, S.angleY/100, S.angleX/100];
+        ypr = [0, S.angleY/1000, S.angleX/1000];
         q = quaternion(eul2quat(ypr,"ZYX"));
         set(posePlot,Orientation=q);
 

@@ -166,11 +166,11 @@ class ServoMotorInv(ServoMotor):
 
     def setOutput(self, pos: float) -> float:
         pt = 100. - pos
-        return super().setOutput(pt)
+        return -super().setOutput(pt) # motor is inverted, so cutoff must be negative
 
     def setOutputAI(self, pos: float) -> float:
         pt = 100. - pos
-        return super().setOutputAI(pt)
+        return -super().setOutputAI(pt) # motor is inverted, so cutoff must be negative
 ##
 
 class BrushedMotor(GenericMotor):
