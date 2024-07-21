@@ -8,12 +8,19 @@ MARMOT_IP = '192.168.1.101'
 MARMOT_C_PORT = 5733
 
 
-def deadzone(input:float, deadzone):
+def deadzone(input:float, deadzone) -> float:
     if input > 0:
         return max(0, (input - deadzone) / (1. - deadzone))
     else:
         return min(0, (input + deadzone) / (1. - deadzone))
 
+def scaleTrigg(input:float, low:float, high:float) -> float:
+    if input > 0:
+        return input * (high - low) + low
+    elif input < 0:
+        return input * 25 + 45
+    else:
+        return 50
 
 
 class XboxController:
@@ -57,8 +64,16 @@ class XboxController:
         yR = deadzone(self.RightJoystickY, 0.2)
         trig = deadzone(self.RightTrigger, 0.07) - deadzone(self.LeftTrigger, 0.07)
 
+        maxTrig = 70
+        if self.A == 1:
+            maxTrig = 55
+        elif self.B == 1:
+            maxTrig = 60
+        elif self.Y == 1:
+            maxTrig = 65
+
         # translate to mobile base control signals:
-        throttle = round(trig*20 + 50)
+        throttle = round(scaleTrigg(trig, 55, maxTrig))
         steering = round(xL*50 + 50)
 
         updown = round(yL * 50)
@@ -136,8 +151,9 @@ def main():
             s.send(byte_data)
 
     except socket.error:
-        print('Lost connection, exiting...')
+        print('Lost connection...')
     finally:
+        print('Socket closed.')
         s.close()
 
 
