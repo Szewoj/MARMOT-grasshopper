@@ -49,7 +49,7 @@ def main():
     # ready subcomponents:
     loop = InterruptibleLoop.InterruptibleLoop()
     poseOR = position.OrientationReader()
-    logger = Logger.TCPLogger(skip=2)
+    logger = Logger.TCPLogger(skip=0)
     sync = synchronizer.Synchro(F_SUSPENSION)
     
     # regulation components:

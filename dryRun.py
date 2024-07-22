@@ -46,14 +46,14 @@ def main():
     # ready subcomponents:
     loop = InterruptibleLoop.InterruptibleLoop()
     poseOR = position.OrientationReader()
-    logger = Logger.TCPLogger(skip=2)
+    logger = Logger.TCPLogger(skip=0)
     sync = synchronizer.Synchro(F_SUSPENSION)
     
     # regulation components:
     u = np.empty((4,1))
     u.fill(60.)
     e = np.empty((2,1))
-    uPID = np.empty((2,1))
+    uPID = np.zeros((2,1))
     out = np.empty(3)
     logAngle = np.empty(2,dtype=float)
 

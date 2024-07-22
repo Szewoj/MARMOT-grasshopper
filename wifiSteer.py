@@ -18,7 +18,7 @@ def scaleTrigg(input:float, low:float, high:float) -> float:
     if input > 0:
         return input * (high - low) + low
     elif input < 0:
-        return input * 25 + 45
+        return input * 20 + 40
     else:
         return 50
 
@@ -64,16 +64,16 @@ class XboxController:
         yR = deadzone(self.RightJoystickY, 0.2)
         trig = deadzone(self.RightTrigger, 0.07) - deadzone(self.LeftTrigger, 0.07)
 
-        maxTrig = 70
+        maxTrig = 65
         if self.A == 1:
-            maxTrig = 55
-        elif self.B == 1:
             maxTrig = 60
+        elif self.B == 1:
+            maxTrig = 61
         elif self.Y == 1:
-            maxTrig = 65
+            maxTrig = 63
 
         # translate to mobile base control signals:
-        throttle = round(scaleTrigg(trig, 55, maxTrig))
+        throttle = round(scaleTrigg(trig, 58, maxTrig))
         steering = round(xL*50 + 50)
 
         updown = round(yL * 50)
