@@ -13,6 +13,8 @@ G_QUAT = ahrs.Quaternion([0., 0., 0., 1.])
 ACC_Z_HOLD = .05
 ACC_Z_MOVE = .95
 
+ACC_Z_DRIFT = 0.026846785798121
+
 class OrientationReader:
     """Class for automatic orientation filtering. Runs on its own thread"""
 
@@ -66,8 +68,11 @@ class OrientationReader:
     def PRIVATE_calculateZ(self, accSI:np.ndarray) -> None:
         self._quatOrientation = ahrs.Quaternion(self._orientation)
         gRot = ahrs.Quaternion(self._quatOrientation * G_QUAT) * self._quatOrientation.conj
-        self._accZ = ACC_Z_HOLD * self._accZ + ACC_Z_MOVE * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3])
-        self._velZ = self._velZ + self._accZ/self.FREQ - 0.00013780
+        self._accZ = ACC_Z_HOLD * self._accZ \
+                + ACC_Z_MOVE * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3]) \
+                - ACC_Z_DRIFT
+        
+        self._velZ = self._velZ + self._accZ/self.FREQ
 
     def getRPY(self) -> np.ndarray:
         self._lock.acquire()
