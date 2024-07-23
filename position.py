@@ -67,7 +67,7 @@ class OrientationReader:
         self._quatOrientation = ahrs.Quaternion(self._orientation)
         gRot = ahrs.Quaternion(self._quatOrientation * G_QUAT) * self._quatOrientation.conj
         self._accZ = ACC_Z_HOLD * self._accZ + ACC_Z_MOVE * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3])
-        self._velZ = self._velZ + self._accZ/self.FREQ
+        self._velZ = self._velZ + self._accZ/self.FREQ - 0.00013780
 
     def getRPY(self) -> np.ndarray:
         self._lock.acquire()
