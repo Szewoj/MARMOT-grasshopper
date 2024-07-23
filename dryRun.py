@@ -76,7 +76,7 @@ def main():
     print("Started!")
     while loop.loop_again:
         out[:] = poseOR.getRPY()
-        z = poseOR.getAccZ()
+        z = poseOR.getZ()
 
         angXY = [1000*out[0], 1000*out[1]] #[roll, pitch]
 
@@ -88,7 +88,7 @@ def main():
         logAngle[:] = np.array(angXY, dtype=float)
         msg = [time.time()] \
                 + logAngle.squeeze().tolist() \
-                + [z] \
+                + [z[1]] \
                 + uPID.astype(float).squeeze().tolist() \
                 + [.0, .0] \
                 + [.0, .0] \

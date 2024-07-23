@@ -10,8 +10,8 @@ import threading
 
 G_QUAT = ahrs.Quaternion([0., 0., 0., 1.])
 
-ACC_Z_HOLD = 1. - 1./20
-ACC_Z_MOVE = 1./20
+ACC_Z_HOLD = .05
+ACC_Z_MOVE = .95
 
 class OrientationReader:
     """Class for automatic orientation filtering. Runs on its own thread"""
@@ -20,6 +20,8 @@ class OrientationReader:
         """- freq - frequency of IMU reading in Hz
            - port - TCP/IP port for debugging IMU -- to be used with Matlab/LogIMU.m script"""
         self.imu = IMU.Imu()
+
+        self.FREQ = freq
 
         self.logger = None
         if port < 1:
@@ -32,6 +34,7 @@ class OrientationReader:
         self._orientation = np.array([1., 0., 0., 0.])
         self._quatOrientation = ahrs.Quaternion(self._orientation)
         self._accZ = 0.
+        self._velZ = 0.
 
         # setup orientation filter:
         self._orientationFilter = ahrs.filters.madgwick.Madgwick()
@@ -45,6 +48,7 @@ class OrientationReader:
         # memory protection lock:
         self._atomicOut = np.copy(self._orientation)
         self._atomicAccZ = 0.
+        self._atomicVelZ = 0.
         self._lock = threading.Lock()
 
 
@@ -55,14 +59,15 @@ class OrientationReader:
         self._lock.acquire()
         self._atomicOut = np.copy(self._orientation)
         self._atomicAccZ = self._accZ
+        self._atomicVelZ = self._velZ
         self._lock.release()
         
 
-    def PRIVATE_calculateAccZ(self, accSI:np.ndarray) -> None:
+    def PRIVATE_calculateZ(self, accSI:np.ndarray) -> None:
         self._quatOrientation = ahrs.Quaternion(self._orientation)
         gRot = ahrs.Quaternion(self._quatOrientation * G_QUAT) * self._quatOrientation.conj
         self._accZ = ACC_Z_HOLD * self._accZ + ACC_Z_MOVE * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3])
-
+        self._velZ = self._velZ + self._accZ/self.FREQ
 
     def getRPY(self) -> np.ndarray:
         self._lock.acquire()
@@ -76,6 +81,22 @@ class OrientationReader:
     def getAccZ(self) -> float:
         self._lock.acquire()
         tmp = self._atomicAccZ
+        self._lock.release()
+
+        return tmp
+    
+
+    def getVelZ(self) -> float:
+        self._lock.acquire()
+        tmp = self._atomicVelZ
+        self._lock.release()
+
+        return tmp
+    
+
+    def getZ(self) -> tuple[float, float, float]:
+        self._lock.acquire()
+        tmp = (self._atomicAccZ, self._atomicVelZ)
         self._lock.release()
 
         return tmp
@@ -101,7 +122,7 @@ class OrientationReader:
             self._orientation = self._orientationFilter.updateIMU(self._orientation, reading.getGyroSI(), reading.getAccSI())
             
             # update Z axis filtered acceleration
-            self.PRIVATE_calculateAccZ(reading.getAccSI())
+            self.PRIVATE_calculateZ(reading.getAccSI())
 
             # update output
             self.PRIVATE_updateOutput()
