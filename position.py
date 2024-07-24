@@ -10,11 +10,15 @@ import threading
 
 G_QUAT = ahrs.Quaternion([0., 0., 0., 1.])
 
-ACC_Z_HOLD = .91
-ACC_Z_MOVE = .09
+ACC_Z_MOVE = .1
+ACC_Z_HOLD = 1 - ACC_Z_MOVE
 
-ACC_Z_DRIFT = 0.026846785798121
-AMP_FILT = 0.013
+ACC_Z_DRIFT = 0.022840923474045
+AMP_FILT = 0.01
+
+VEL_Z_MOVE = 1
+VEL_Z_ZERO = .01
+VEL_Z_HOLD = 1 - VEL_Z_ZERO
 
 class OrientationReader:
     """Class for automatic orientation filtering. Runs on its own thread"""
@@ -70,11 +74,12 @@ class OrientationReader:
         self._quatOrientation = ahrs.Quaternion(self._orientation)
         gRot = ahrs.Quaternion(self._quatOrientation * G_QUAT) * self._quatOrientation.conj
         self._accZ = ACC_Z_HOLD * self._accZ \
-                + ACC_Z_MOVE * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3]) \
-                - ACC_Z_DRIFT
-        
+                + ACC_Z_MOVE * (accSI[2] - ahrs.MEAN_NORMAL_GRAVITY * gRot[3] \
+                - ACC_Z_DRIFT)
+        delta = 0
         if abs(self._accZ) > AMP_FILT:
-            self._velZ = self._velZ + self._accZ/self.FREQ
+            delta = self._accZ/self.FREQ
+        self._velZ = VEL_Z_HOLD * self._velZ + VEL_Z_MOVE * delta
 
     def getRPY(self) -> np.ndarray:
         self._lock.acquire()
@@ -178,7 +183,7 @@ class OrientationReader:
             self._orientation = self._orientationFilter.updateIMU(self._orientation, reading.getGyroSI(), reading.getAccSI())
 
             # update Z axis filtered acceleration
-            self.PRIVATE_calculateAccZ(reading.getAccSI())
+            self.PRIVATE_calculateZ(reading.getAccSI())
             
             # log data
             if self.doLog:
