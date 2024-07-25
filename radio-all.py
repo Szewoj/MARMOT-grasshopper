@@ -71,25 +71,23 @@ def main():
                 break
 
             byte_data += bytes(byte) 
-            if len(byte_data) < 6:
+            if len(byte_data) < 24:
                 continue
 
             data = struct.unpack('!6f', byte_data)
             byte_data = b''
 
-            print(data)
-
-            #inputs = [float.from_bytes(data[x], byteorder='little', signed=True) for x in range(6)]
-            #print(inputs)
+            inputs = [round(data[i],1) for i in range(6)]
+            print(inputs)
 
             # set inputs:
             
-            #brushedMotor.setOutputAI(inputs[0])
-            #servoSteering.setOutputAI(inputs[1])
-            #servoLF.setOutputAI(inputs[2])
-            #servoRF.setOutputAI(inputs[3])
-            #servoLB.setOutputAI(inputs[4])
-            #servoRB.setOutputAI(inputs[5])
+            brushedMotor.setOutputAI(inputs[0])
+            servoSteering.setOutputAI(inputs[1])
+            servoLF.setOutputAI(inputs[2])
+            servoRF.setOutputAI(inputs[3])
+            servoLB.setOutputAI(inputs[4])
+            servoRB.setOutputAI(inputs[5])
     
 
     # clean up after steering:

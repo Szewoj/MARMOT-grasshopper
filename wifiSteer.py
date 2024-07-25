@@ -6,7 +6,7 @@ from misc.InterruptibleLoop import InterruptibleLoop
 
 MARMOT_IP = '192.168.1.101'
 MARMOT_C_PORT = 5733
-STEER_BASE=5
+STEER_BASE=5.
 
 def deadzone(inPut:float, deadzone) -> float:
     if inPut > 0:
@@ -24,9 +24,9 @@ def scaleTrigg(inPut:float, low:float, high:float) -> float:
     
 def scaleSteer(inPut:float, base=STEER_BASE) -> float:
     if inPut > 0:
-        return (base ^ inPut - 1) / (base - 1)
+        return (base ** inPut - 1) / (base - 1)
     elif inPut < 0:
-        return -(base ^ (-inPut) - 1) / (base - 1)
+        return -(base ** (-inPut) - 1) / (base - 1)
     else:
         return 0
 
