@@ -6,21 +6,29 @@ from misc.InterruptibleLoop import InterruptibleLoop
 
 MARMOT_IP = '192.168.1.101'
 MARMOT_C_PORT = 5733
+STEER_BASE=5
 
-
-def deadzone(input:float, deadzone) -> float:
-    if input > 0:
-        return max(0, (input - deadzone) / (1. - deadzone))
+def deadzone(inPut:float, deadzone) -> float:
+    if inPut > 0:
+        return max(0, (inPut - deadzone) / (1. - deadzone))
     else:
-        return min(0, (input + deadzone) / (1. - deadzone))
+        return min(0, (inPut + deadzone) / (1. - deadzone))
 
-def scaleTrigg(input:float, low:float, high:float) -> float:
-    if input > 0:
-        return input * (high - low) + low
-    elif input < 0:
-        return input * 20 + 40
+def scaleTrigg(inPut:float, low:float, high:float) -> float:
+    if inPut > 0:
+        return inPut * (high - low) + low
+    elif inPut < 0:
+        return inPut * 20 + 40
     else:
         return 50
+    
+def scaleSteer(inPut:float, base=STEER_BASE) -> float:
+    if inPut > 0:
+        return (base ^ inPut - 1) / (base - 1)
+    elif inPut < 0:
+        return -(base ^ (-inPut) - 1) / (base - 1)
+    else:
+        return 0
 
 
 class XboxController:
@@ -58,7 +66,7 @@ class XboxController:
 
 
     def read(self):
-        xL = -deadzone(self.LeftJoystickX, 0.2)
+        xL = scaleSteer(-deadzone(self.LeftJoystickX, 0.2))
         yL = deadzone(self.LeftJoystickY, 0.2)
         xR = deadzone(self.RightJoystickX, 0.2)
         yR = deadzone(self.RightJoystickY, 0.2)
@@ -73,12 +81,12 @@ class XboxController:
             maxTrig = 63
 
         # translate to mobile base control signals:
-        throttle = round(scaleTrigg(trig, 58, maxTrig))
-        steering = round(xL*50 + 50)
+        throttle = round(scaleTrigg(trig, 58, maxTrig), 1)
+        steering = round(xL*50 + 50, 1)
 
-        updown = round(yL * 50)
-        xAxis = round(xR * 50)
-        yAxis = round(yR * 50)
+        updown = round(yL * 50, 1)
+        xAxis = round(xR * 50, 1)
+        yAxis = round(yR * 50, 1)
 
         uFL = min(100, max(0, 50 + updown + xAxis - yAxis))
         uFR = min(100, max(0, 50 + updown - xAxis - yAxis))
@@ -147,7 +155,7 @@ def main():
         while loop.loop_again:
             sleep(0.1)
             data = joy.read()
-            byte_data = struct.pack('!%sb' % len(data), *data)
+            byte_data = struct.pack('!%sf' % len(data), *data)
             s.send(byte_data)
 
     except socket.error:
