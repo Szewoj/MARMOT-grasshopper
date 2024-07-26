@@ -8,7 +8,7 @@ P_LIMIT = np.matrix([[0.],[100.]])
 N_LIMIT = np.matrix([[100.],[0.]])
 
 # Z axis split constants:
-Z_P = np.matrix('.2, .0; .0, .24')
+Z_P = np.matrix('5., .0; .0, 6.')
 Z_D0 = np.matrix('1., .0; .0, -1.')
 Z_M = np.empty((2,2))
 Z_M[:] = Z_P @ Z_D0
@@ -139,7 +139,7 @@ class Equalizer:
     """
 
     CENTERPOINT = 50.0
-    KP = 0.1
+    KP = 0.05
 
     def __init__(self) -> None:
         self._dU = np.empty((4,1))
