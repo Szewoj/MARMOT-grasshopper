@@ -1,9 +1,17 @@
 import numpy as np
 
+# split constants:
 ZEROS = np.zeros((1,4))
 
+# centering constants:
 P_LIMIT = np.matrix([[0.],[100.]])
 N_LIMIT = np.matrix([[100.],[0.]])
+
+# Z axis split constants:
+Z_P = np.matrix('.2, .0; .0, .24')
+Z_D0 = np.matrix('1., .0; .0, -1.')
+Z_M = np.empty((2,2))
+Z_M[:] = Z_P @ Z_D0
 
 class Splitter:
     """Splits pid2d outputs between 4 on-board servos"""
@@ -19,6 +27,7 @@ class Splitter:
         """mean vector of x axis outputs [Right, Left]"""
         self._my:np.ndarray = np.empty((2,1))
         """mean vector of x axis outputs [Front, Back]"""
+        self._zSplit:np.ndarray = np.empty((2,1))
         self._splitMtx:np.ndarray = np.empty((4,2))
         self._joinMtx:np.ndarray = np.empty((2,4))
         self._om_x = 0.
@@ -108,13 +117,20 @@ class Splitter:
         return self.split(dUpid, spl_centered)
     
 
-    def splitByZ(self, dUpid:np.ndarray, u:np.ndarray, vZ:np.ndarray) -> np.ndarray:
+    def splitByZ(self, dUpid:np.ndarray, u:np.ndarray, vZ:float) -> np.ndarray:
         baseSplit = self.centeringOmega(dUpid, u) # base split for keeping output away from limits
 
         # calculate split based on z axis velocity:
-        
+        self._dUxy[:] = np.round(dUpid,1)
 
-        pass
+        self._zSplit[:] = np.clip(Z_M @ np.sign(self._dUxy) * vZ + .5, 0.05, 0.95)
+
+        print(self._zSplit)
+        
+        om_x = round(.5 * baseSplit[0] + .5 * self._zSplit.tolist()[0][0] , 2)
+        om_y = round(.5 * baseSplit[1] + .5 * self._zSplit.tolist()[1][0] , 2)
+
+        return self.split(dUpid, (om_x, om_y))
 
 class Equalizer:
     """
@@ -168,6 +184,16 @@ def main() -> None:
     print('')
 
     print(splitter.centeringOmega(uPID, a))
+
+    print("#######################")
+    print("Split by Z=2:")
+    uPID[0] = 0
+    uPID[1] = 10
+    print(uPID)
+    a = np.matrix('0.; 0.; 50.; 50.')
+    print('')
+
+    print(splitter.splitByZ(uPID, a, 2.))
 
 if __name__ == '__main__':
     main()

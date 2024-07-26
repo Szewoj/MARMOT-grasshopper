@@ -91,7 +91,7 @@ def main():
     print("Started!")
     while loop.loop_again:
         out[:] = poseOR.getRPY()
-        z = poseOR.getAccZ()
+        z = poseOR.getZ()
 
         angXY = [1000*out[0], 1000*out[1]] #[roll, pitch]
 
@@ -103,8 +103,12 @@ def main():
 
         # calculate output:
         uPID[:] = pid2d.update(e)
-        u[:] = u + np.round(pidSplitter.splitEven(uPID),1)
-        
+
+        #u[:] = u + np.round(pidSplitter.splitEven(uPID),1)
+        u[:] = u + np.round(pidSplitter.splitCentering(uPID, u),1)
+        #u[:] = u + np.round(pidSplitter.splitByZ(uPID, u, z[1]),1)
+
+
         # anti windup:
         uClamp[:] = suspension.setOutputs(u)
         uClampPID[:] = pidSplitter.join(uClamp)
@@ -115,7 +119,7 @@ def main():
         logAngle[:] = np.array(angXY, dtype=float)
         msg = [time.time()] \
                 + logAngle.squeeze().tolist() \
-                + [z] \
+                + [z[1]] \
                 + uPID.astype(float).squeeze().tolist() \
                 + pid2d._uP.astype(float).squeeze().tolist() \
                 + pid2d._uI.astype(float).squeeze().tolist() \

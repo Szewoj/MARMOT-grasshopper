@@ -106,7 +106,7 @@ class OrientationReader:
         return tmp
     
 
-    def getZ(self) -> tuple[float, float, float]:
+    def getZ(self) -> tuple[float, float]:
         self._lock.acquire()
         tmp = (self._atomicAccZ, self._atomicVelZ)
         self._lock.release()
