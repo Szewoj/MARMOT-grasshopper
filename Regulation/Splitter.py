@@ -2,6 +2,9 @@ import numpy as np
 
 ZEROS = np.zeros((1,4))
 
+P_LIMIT = np.matrix([[0.],[100.]])
+N_LIMIT = np.matrix([[100.],[0.]])
+
 class Splitter:
     """Splits pid2d outputs between 4 on-board servos"""
 
@@ -9,6 +12,13 @@ class Splitter:
         # allocate memory for faster computing:
         self._dUxy:np.ndarray = np.empty((2,1))
         self._dUsplit:np.ndarray = np.empty((4,1))
+        self._u:np.ndarray = np.empty((4,1))
+        """Output values [uFL, uFR, uBL, uBR]"""
+        self._p:np.ndarray = np.empty((2,1))
+        self._mx:np.ndarray = np.empty((2,1))
+        """mean vector of x axis outputs [Right, Left]"""
+        self._my:np.ndarray = np.empty((2,1))
+        """mean vector of x axis outputs [Front, Back]"""
         self._splitMtx:np.ndarray = np.empty((4,2))
         self._joinMtx:np.ndarray = np.empty((2,4))
         self._om_x = 0.
@@ -63,6 +73,48 @@ class Splitter:
         return self.split(dUpid, (.5,.5))
     
 
+    def centeringOmega(self, dUpid:np.ndarray, u:np.ndarray) -> tuple[float, float]:
+        self._u[:] = u
+        self._p[:] = dUpid
+
+        self._mx[0][0] = np.mean(self._u[[1,3]])
+        self._mx[1][0] = np.mean(self._u[[0,2]])
+        self._my[0][0] = np.mean(self._u[[0,1]])
+        self._my[1][0] = np.mean(self._u[[2,3]])
+
+        if np.signbit(self._p[0][0]):
+            # negative dUx
+            self._mx[:] = np.clip(np.abs(N_LIMIT - self._mx), .1, None)
+        else:
+            # positive dUx
+            self._mx[:] = np.clip(np.abs(P_LIMIT - self._mx), .1, None)
+
+        if np.signbit(self._p[1][0]):
+            # negative dUy
+            self._my[:] = np.clip(np.abs(N_LIMIT - self._my), .1, None)
+        else:
+            # positive dUy
+            self._my[:] = np.clip(np.abs(P_LIMIT - self._my), .1, None)
+        
+        om_x = round(self._mx.tolist()[1][0] / self._mx.sum(), 2)
+        om_y = round(self._my.tolist()[1][0] / self._my.sum(), 2)
+
+        return (om_x, om_y)
+
+
+    def splitCentering(self, dUpid:np.ndarray, u:np.ndarray) -> np.ndarray:
+        spl = self.centeringOmega(dUpid, u)
+        spl_centered = (0.1 + 0.8 * spl[0], 0.1 + 0.8 * spl[1])
+        return self.split(dUpid, spl_centered)
+    
+
+    def splitByZ(self, dUpid:np.ndarray, u:np.ndarray, vZ:np.ndarray) -> np.ndarray:
+        baseSplit = self.centeringOmega(dUpid, u) # base split for keeping output away from limits
+
+        # calculate split based on z axis velocity:
+        
+
+        pass
 
 class Equalizer:
     """
@@ -105,6 +157,17 @@ def main() -> None:
     print("Split: \n" + str(a))
     uPID[:] = splitter.join(a)
     print("Joined: \n" + str(uPID))
+
+    print("#######################")
+
+    print("Generate split data for:")
+    uPID[0] = 1
+    uPID[1] = -1
+    print(uPID)
+    a = np.matrix('80.; 40.; 80.; 40.')
+    print('')
+
+    print(splitter.centeringOmega(uPID, a))
 
 if __name__ == '__main__':
     main()

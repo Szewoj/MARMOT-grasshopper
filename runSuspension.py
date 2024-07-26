@@ -7,9 +7,11 @@ import Actuator.motors
 import position
 from Regulation import Splitter, Algorithms, Parameters
 
-F_SUSPENSION = 25. # Hz
 
-REGULATOR = Parameters.PID_XY
+
+REGULATOR = Parameters.PID_XY_V2
+
+F_SUSPENSION = REGULATOR.FREQ
 
 class Suspension:
     """Suspension class for batch servo motor management."""
@@ -49,7 +51,7 @@ def main():
     # ready subcomponents:
     loop = InterruptibleLoop.InterruptibleLoop()
     poseOR = position.OrientationReader()
-    logger = Logger.TCPLogger(skip=0)
+    logger = Logger.TCPLogger(skip=REGULATOR.SKIP)
     sync = synchronizer.Synchro(F_SUSPENSION)
     
     # regulation components:

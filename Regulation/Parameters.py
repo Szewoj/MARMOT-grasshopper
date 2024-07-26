@@ -8,6 +8,9 @@ class PID:
     B = (0,0)
     X = (-0.0588, -0.0132)  # calculated optimal crossover ratio
 
+    FREQ = 25  # regulation frequency
+    SKIP = 0   # logger skip
+
 class PID_P(PID):
     """P regulator"""
     P = (.6, .65)
@@ -29,30 +32,19 @@ class PID_ZN(PID):
     D = (0.1086, 0.1441)
     B = (1.5 * I[0], 1.5 * I[1])
 
-class PID_ZN_PI(PID):
-    """PI regulator"""
-    P = (2.0357, 2.7023)
-    I = (1.8607, 1.4017)
-    B = (1.5 * I[0], 1.5 * I[1])
-
-
-class PID_ZN_HALVED(PID):
-    """Ziegler-Nichols parameters halved to compensate for 2d PID application"""
-    P = (2.7143/2, 3.6031/2)
-    I = (2.302/2, 1.7346/2)
-    D = (0.1086/2, 0.1441/2)
-    B = (1.5 * I[0], 1.5 * I[1])
+class PID_LAMBDA(PID):
+    """Lambda tuned pid parameters."""
 
 
 class PID_X(PID):
-    """Custom experimental PID parameters"""
+    """Custom experimental PID parameters."""
     P = (.42, 0)
     I = (.06, 0)
     D = (0.03, 0)
     B = (1.5 * I[0], 1.5 * I[1])
 
 class PID_Y(PID):
-    """Custom experimental PID parameters"""
+    """Custom experimental PID parameters."""
     P = (0, .435)
     I = (0, .064)
     D = (0, 0.035)
@@ -60,16 +52,27 @@ class PID_Y(PID):
 
 
 class PID_XY_V1(PID):
-    """Custom experimental PID parameters. (Version: 1)"""
+    """Custom experimental PID parameters. Mostly P regulation. (Version: 1)"""
     P = (.53, .57)
     I = (.08, .085)
     D = (0.008, 0.0085)
-    B = (1.5 * I[0], 1.5 * I[1])
+    B = (0.1 * I[0], 0.1 * I[1])
 
 
-class PID_XY(PID):
-    """Custom experimental PID parameters. (Version: 2)"""
+class PID_XY_V2(PID):
+    """Custom experimental PID parameters. High integral parameter. (Version: 2)"""
     P = (.33, .48)
     I = (0.4, .36)
     D = (0.01, 0.012)
     B = (0.1 * I[0], 0.1 * I[1])
+
+
+class PID_XY(PID):
+    """Custom experimental PID parameters. Suspension frequency = 50Hz. (Version: 3)"""
+    P = (.165, .24)
+    I = (0.2, .18)
+    D = (0.01, 0.012)
+    B = (0.1 * I[0], 0.1 * I[1])
+
+    F = 50
+    S = 1
