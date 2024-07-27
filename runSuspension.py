@@ -9,7 +9,7 @@ from Regulation import Splitter, Algorithms, Parameters
 
 
 
-REGULATOR = Parameters.PID_XY_V2
+REGULATOR = Parameters.PID_LAMBDA_V1
 
 F_SUSPENSION = REGULATOR.FREQ
 

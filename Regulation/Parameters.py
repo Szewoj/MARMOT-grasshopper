@@ -24,17 +24,15 @@ class PID_D_TEST(PID):
     """D testing parameters"""
     D = (0.5, 0.5)
 
+class PID_LAMBDA_V1(PID):
+    """Lambda tuned pid parameters. Lambda=(.105, 0.06) """
+    P = (.0166, .0162)
+    I = (4.3478, 6.25)
+    D = (0.07, 0.04)
+    B = (0.1 * I[0], 0.1 * I[1])
 
-class PID_ZN(PID):
-    """Ziegler-Nichols parameters of an open-loop system"""
-    P = (2.7143, 3.6031)
-    I = (2.302, 1.7346)
-    D = (0.1086, 0.1441)
-    B = (1.5 * I[0], 1.5 * I[1])
-
-class PID_LAMBDA(PID):
-    """Lambda tuned pid parameters."""
-
+    FREQ = 100  # regulation frequency
+    SKIP = 4   # logger skip
 
 class PID_X(PID):
     """Custom experimental PID parameters."""
