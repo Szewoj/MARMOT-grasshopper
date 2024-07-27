@@ -8,7 +8,7 @@ import position
 
 from Regulation import Splitter
 
-F_SUSPENSION = 50. # Hz
+F_SUSPENSION = 100. # Hz
 
 class Suspension:
     """Suspension class for batch servo motor management."""
@@ -97,17 +97,17 @@ def main():
             uPID[0][0] = 0
             uPID[1][0] = -1
 
-        if i == 220:
+        if i == 240:
             print("Step response, dUy = 4")
             uPID[0][0] = 0
             uPID[1][0] = 4
         
-        if i == 240:
+        if i == 280:
             print("Step response, dUy = 0")
             uPID[0][0] = 0
             uPID[1][0] = 0
 
-        if i == 300:
+        if i == 400:
             print("Step response, dUy = 0")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -117,22 +117,22 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 400:
+        if i == 500:
             print("Step response, dUx = -1")
             uPID[0][0] = -1
             uPID[1][0] = 0
 
-        if i == 420:
+        if i == 540:
             print("Step response, dUx = 4")
             uPID[0][0] = 4
             uPID[1][0] = 0
 
-        if i == 440:
+        if i == 580:
             print("Step response, dUx = 0")
             uPID[0][0] = 0
             uPID[1][0] = 0
 
-        if i == 500:
+        if i == 700:
             print("Step response, dUx = 0")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -142,7 +142,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 520:
+        if i == 800:
             loop.breakLoop()
 
         # split outputs
