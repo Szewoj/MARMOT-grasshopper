@@ -24,6 +24,7 @@ class Synchro:
             time.sleep(self.waitTime)
         else:
             self.waitTime = 0
+            #print("!", end='')
             self.timeCounter += self.INTERVAL
             return
 

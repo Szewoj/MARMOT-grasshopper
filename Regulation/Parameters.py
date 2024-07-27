@@ -25,10 +25,20 @@ class PID_D_TEST(PID):
     D = (0.5, 0.5)
 
 class PID_LAMBDA_V1(PID):
-    """Lambda tuned pid parameters. Lambda=(.105, 0.06) """
+    """Lambda tuned pid parameters. Lambda=(.105, 0.06). Very slow."""
     P = (.0166, .0162)
-    I = (4.3478, 6.25)
-    D = (0.07, 0.04)
+    I = (0.0722, 0.1014)
+    D = (0.0012, 0.00065)
+    B = (0.1 * I[0], 0.1 * I[1])
+
+    FREQ = 100  # regulation frequency
+    SKIP = 4   # logger skip
+
+class PID_LAMBDA_V2(PID):
+    """Lambda tuned pid parameters. Lambda=(.105, 0.06), parameters x10. Fast, but unstable."""
+    P = (.166, .162)
+    I = (.722, 1.014)
+    D = (.012, .0065)
     B = (0.1 * I[0], 0.1 * I[1])
 
     FREQ = 100  # regulation frequency
@@ -36,41 +46,36 @@ class PID_LAMBDA_V1(PID):
 
 class PID_X(PID):
     """Custom experimental PID parameters."""
-    P = (.42, 0)
-    I = (.06, 0)
-    D = (0.03, 0)
-    B = (1.5 * I[0], 1.5 * I[1])
+    P = (.166, 0)
+    I = (.722, 0)
+    D = (.012, 0)
+    B = (0.1 * I[0], 0.1 * I[1])
 
 class PID_Y(PID):
     """Custom experimental PID parameters."""
-    P = (0, .435)
-    I = (0, .064)
-    D = (0, 0.035)
-    B = (1.5 * I[0], 1.5 * I[1])
+    P = (0, .162)
+    I = (0, 1.014)
+    D = (0, .0065)
+    B = (0.1 * I[0], 0.1 * I[1])
 
 
 class PID_XY_V1(PID):
-    """Custom experimental PID parameters. Mostly P regulation. (Version: 1)"""
-    P = (.53, .57)
-    I = (.08, .085)
-    D = (0.008, 0.0085)
+    """Custom experimental PID parameters. Faster lambda variation. Less integral.  (Version: 1)"""
+    P = (.202, .194)
+    I = (.361, 0.507)
+    D = (.012, .0065)
     B = (0.1 * I[0], 0.1 * I[1])
+
+    FREQ = 75  # regulation frequency
+    SKIP = 1   # logger skip
 
 
 class PID_XY_V2(PID):
-    """Custom experimental PID parameters. High integral parameter. (Version: 2)"""
-    P = (.33, .48)
-    I = (0.4, .36)
-    D = (0.01, 0.012)
+    """Custom experimental PID parameters. Higher integral parameter.(Version: 1)"""
+    P = (.195, .19)
+    I = (.5415, .7605)
+    D = (.0092, .0067)
     B = (0.1 * I[0], 0.1 * I[1])
 
-
-class PID_XY(PID):
-    """Custom experimental PID parameters. Suspension frequency = 50Hz. (Version: 3)"""
-    P = (.165, .24)
-    I = (0.2, .18)
-    D = (0.01, 0.012)
-    B = (0.1 * I[0], 0.1 * I[1])
-
-    F = 50
-    S = 1
+    FREQ = 80  # regulation frequency
+    SKIP = 3   # logger skip

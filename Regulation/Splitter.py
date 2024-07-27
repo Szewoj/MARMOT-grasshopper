@@ -125,7 +125,7 @@ class Splitter:
 
         self._zSplit[:] = np.clip(Z_M @ np.sign(self._dUxy) * vZ + .5, 0.05, 0.95)
 
-        print(self._zSplit)
+        #print(self._zSplit)
         
         om_x = round(.5 * baseSplit[0] + .5 * self._zSplit.tolist()[0][0] , 2)
         om_y = round(.5 * baseSplit[1] + .5 * self._zSplit.tolist()[1][0] , 2)

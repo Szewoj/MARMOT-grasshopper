@@ -95,13 +95,13 @@ disp("X parameters:")
 xT_I = (2*xLmbd + xDeadTime);
 xK_P = xT_I / xKpi / (xLmbd  + xDeadTime)
 
-xK_I = 1 / xT_I
-xT_D = xLagTime
+xK_I = xK_P / xT_I
+xT_D = xK_P * xLagTime
 
 disp("Y parameters:")
 
 yT_I = (2*yLmbd + yDeadTime);
 yK_P = yT_I / yKpi / (yLmbd  + yDeadTime)
 
-yK_I = 1 / yT_I
-yT_D = yLagTime
+yK_I = yK_P / yT_I
+yT_D = yK_P * yLagTime
