@@ -6,6 +6,8 @@ import time
 import Actuator.motors
 import position
 
+from Regulation import Splitter
+
 F_SUSPENSION = 25. # Hz
 
 class Suspension:
@@ -48,6 +50,7 @@ def main():
     poseOR = position.OrientationReader()
     logger = Logger.TCPLogger(skip=0)
     sync = synchronizer.Synchro(F_SUSPENSION)
+    pidSplitter = Splitter.Splitter()
     
     # regulation components:
     u = np.empty((4,1))
@@ -82,37 +85,30 @@ def main():
 
         # preplanned steering trajectory
         if i == 50:
-            print("Step response, dUy = 100")
-            uPID[0][0] = 0
-            uPID[1][0] = 10
+            print("Step response, dUy = 0")
 
-            u[0][0] = 0
-            u[1][0] = 0
-            u[2][0] = 100
-            u[3][0] = 100
+            u[0][0] = 50
+            u[1][0] = 50
+            u[2][0] = 50
+            u[3][0] = 50
 
         if i == 100:
-            print("Step response, dUy = -100")
+            print("Step response, dUy = -2")
+            uPID[0][0] = 0
+            uPID[1][0] = -2
+
+        if i == 110:
+            print("Step response, dUy = 8")
+            uPID[0][0] = 0
+            uPID[1][0] = 8
+        
+        if i == 120:
+            print("Step response, dUy = 0")
             uPID[0][0] = 0
             uPID[1][0] = 0
-
-            u[0][0] = 50
-            u[1][0] = 50
-            u[2][0] = 50
-            u[3][0] = 50
 
         if i == 150:
-            print("Step response, dUy = -100")
-            uPID[0][0] = 0
-            uPID[1][0] = -10
-
-            u[0][0] = 100
-            u[1][0] = 100
-            u[2][0] = 0
-            u[3][0] = 0
-        
-        if i == 200:
-            print("Step response, dUy = 100")
+            print("Step response, dUy = 0")
             uPID[0][0] = 0
             uPID[1][0] = 0
 
@@ -120,19 +116,24 @@ def main():
             u[1][0] = 50
             u[2][0] = 50
             u[3][0] = 50
+
+        if i == 200:
+            print("Step response, dUx = -2")
+            uPID[0][0] = -2
+            uPID[1][0] = 0
+
+        if i == 210:
+            print("Step response, dUx = 8")
+            uPID[0][0] = 8
+            uPID[1][0] = 0
+
+        if i == 220:
+            print("Step response, dUx = 8")
+            uPID[0][0] = 8
+            uPID[1][0] = 0
 
         if i == 250:
-            print("Step response, dUx = 100")
-            uPID[0][0] = 10
-            uPID[1][0] = 0
-
-            u[0][0] = 100
-            u[1][0] = 0
-            u[2][0] = 100
-            u[3][0] = 0
-
-        if i == 300:
-            print("Step response, dUx = -100")
+            print("Step response, dUx = 0")
             uPID[0][0] = 0
             uPID[1][0] = 0
 
@@ -141,28 +142,11 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 350:
-            print("Step response, dUx = -100")
-            uPID[0][0] = -10
-            uPID[1][0] = 0
-
-            u[0][0] = 0
-            u[1][0] = 100
-            u[2][0] = 0
-            u[3][0] = 100
-
-        if i == 400:
-            print("Step response, dUx = 100")
-            uPID[0][0] = 0
-            uPID[1][0] = 0
-
-            u[0][0] = 50
-            u[1][0] = 50
-            u[2][0] = 50
-            u[3][0] = 50
-
-        if i == 450:
+        if i == 260:
             loop.breakLoop()
+
+        # split outputs
+        u[:] = u + np.round(pidSplitter.splitEven(uPID),1)
 
         suspension.setOutputs(u)
 
