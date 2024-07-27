@@ -172,6 +172,9 @@ def main():
                 + logAngle.squeeze().tolist() \
                 + [z] \
                 + uPID.astype(float).squeeze().tolist() \
+                + [.0, .0] \
+                + [.0, .0] \
+                + [.0, .0] \
                 + u.astype(float).squeeze().tolist()
         logger.log(msg)
 

@@ -8,7 +8,7 @@ import position
 
 from Regulation import Splitter
 
-F_SUSPENSION = 25. # Hz
+F_SUSPENSION = 50. # Hz
 
 class Suspension:
     """Suspension class for batch servo motor management."""
@@ -84,33 +84,8 @@ def main():
 
 
         # preplanned steering trajectory
-        if i == 50:
-            print("Step response, dUy = 0")
-
-            u[0][0] = 50
-            u[1][0] = 50
-            u[2][0] = 50
-            u[3][0] = 50
-
         if i == 100:
-            print("Step response, dUy = -2")
-            uPID[0][0] = 0
-            uPID[1][0] = -2
-
-        if i == 110:
-            print("Step response, dUy = 8")
-            uPID[0][0] = 0
-            uPID[1][0] = 8
-        
-        if i == 120:
             print("Step response, dUy = 0")
-            uPID[0][0] = 0
-            uPID[1][0] = 0
-
-        if i == 150:
-            print("Step response, dUy = 0")
-            uPID[0][0] = 0
-            uPID[1][0] = 0
 
             u[0][0] = 50
             u[1][0] = 50
@@ -118,21 +93,46 @@ def main():
             u[3][0] = 50
 
         if i == 200:
-            print("Step response, dUx = -2")
-            uPID[0][0] = -2
-            uPID[1][0] = 0
-
-        if i == 210:
-            print("Step response, dUx = 8")
-            uPID[0][0] = 8
-            uPID[1][0] = 0
+            print("Step response, dUy = -1")
+            uPID[0][0] = 0
+            uPID[1][0] = -1
 
         if i == 220:
-            print("Step response, dUx = 8")
-            uPID[0][0] = 8
+            print("Step response, dUy = 4")
+            uPID[0][0] = 0
+            uPID[1][0] = 4
+        
+        if i == 240:
+            print("Step response, dUy = 0")
+            uPID[0][0] = 0
             uPID[1][0] = 0
 
-        if i == 250:
+        if i == 300:
+            print("Step response, dUy = 0")
+            uPID[0][0] = 0
+            uPID[1][0] = 0
+
+            u[0][0] = 50
+            u[1][0] = 50
+            u[2][0] = 50
+            u[3][0] = 50
+
+        if i == 400:
+            print("Step response, dUx = -1")
+            uPID[0][0] = -1
+            uPID[1][0] = 0
+
+        if i == 420:
+            print("Step response, dUx = 4")
+            uPID[0][0] = 4
+            uPID[1][0] = 0
+
+        if i == 440:
+            print("Step response, dUx = 0")
+            uPID[0][0] = 0
+            uPID[1][0] = 0
+
+        if i == 500:
             print("Step response, dUx = 0")
             uPID[0][0] = 0
             uPID[1][0] = 0
@@ -142,7 +142,7 @@ def main():
             u[2][0] = 50
             u[3][0] = 50
 
-        if i == 260:
+        if i == 520:
             loop.breakLoop()
 
         # split outputs
@@ -156,6 +156,9 @@ def main():
                 + logAngle.squeeze().tolist() \
                 + [z] \
                 + uPID.astype(float).squeeze().tolist() \
+                + [.0, .0] \
+                + [.0, .0] \
+                + [.0, .0] \
                 + u.astype(float).squeeze().tolist()
         logger.log(msg)
 
