@@ -1,7 +1,7 @@
 clear;
 
 % Prepare result table
-Nsize = 600;
+Nsize = 1200;
 
 % Angular position setpoints:
 ANG_X_STPT = 0;
