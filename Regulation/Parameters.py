@@ -32,7 +32,7 @@ class PID_LAMBDA_V1(PID):
     B = (0.1 * I[0], 0.1 * I[1])
 
     FREQ = 100  # regulation frequency
-    SKIP = 4   # logger skip
+    SKIP = 2   # logger skip
 
 class PID_LAMBDA_V2(PID):
     """Lambda tuned pid parameters. Lambda=(.105, 0.06), parameters x10. Fast, but unstable."""
@@ -42,7 +42,7 @@ class PID_LAMBDA_V2(PID):
     B = (0.1 * I[0], 0.1 * I[1])
 
     FREQ = 100  # regulation frequency
-    SKIP = 4   # logger skip
+    SKIP = 2   # logger skip
 
 class PID_X(PID):
     """Custom experimental PID parameters."""
