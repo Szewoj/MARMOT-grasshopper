@@ -36,7 +36,7 @@ ax23 = gca;
 
 title(ax21, 'Angular position around X axis (roll)  [mrad]')
 title(ax22, 'Angular position around Y axis (pitch) [mrad]')
-title(ax23, 'Onboard Z axis acceleration [m/s^2]')
+title(ax23, 'Onboard Z axis velocity [m/s^2]')
 
 angXLine = animatedline(ax21, "Color", "#0072BD");
 angXstptLine = animatedline(ax21, "Color", "#7E2F8E", "LineStyle","--");

@@ -62,7 +62,7 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
         S.Time = datetime(data(1),'convertfrom','posixtime', 'Format', 'yyyy-MM-dd HH:mm:ss.SSS');
         S.angleX = data(2);
         S.angleY = data(3);
-        S.accZ   = data(4);
+        S.velZ   = data(4);
         S.PID_X  = data(5);
         S.PID_Y  = data(6);
         S.PID_X_P= data(7);
@@ -83,7 +83,7 @@ function readingTable = LogGHloop(maxLoop, posePlot, ...
         addpoints(angYstpLine, timestamp, angYstpt);
         addpoints(angYLine, timestamp, S.angleY);
 
-        addpoints(accZLine, timestamp, S.accZ);
+        addpoints(accZLine, timestamp, S.velZ);
 
         addpoints(pidXLine, timestamp, S.PID_X);
         addpoints(pidXPLine, timestamp, S.PID_X_P);
