@@ -78,4 +78,4 @@ class PID_XY_V2(PID):
     B = (0.1 * I[0], 0.1 * I[1])
 
     FREQ = 80  # regulation frequency
-    SKIP = 3   # logger skip
+    SKIP = 1   # logger skip

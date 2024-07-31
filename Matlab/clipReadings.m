@@ -1,6 +1,6 @@
 %% Plot readings
 clear;
-file = "lambdaV2\b1";
+file = "xyV2\y5.mat";
 
 load("Raw\" + file);
 
@@ -35,13 +35,13 @@ stairs(ax11, 1:dataLen, zeros(dataLen,1), "Color", "#7E2F8E", "LineStyle","--");
 stairs(ax12, 1:dataLen, readings{:,"angleY"}, "Color", "#D95319");
 stairs(ax12, 1:dataLen, zeros(dataLen,1), "Color", "#7E2F8E", "LineStyle","--");
 
-stairs(ax13, 1:dataLen, readings{:,"accZ"}, "Color", "#77AC30");
+stairs(ax13, 1:dataLen, readings{:,"velZ"}, "Color", "#77AC30");
 
 
 
 %% Clip for save processed data
 
-clipRange = 60:320;
+clipRange = 27:293;
 
 data = readings(clipRange,:);
 
