@@ -1,6 +1,6 @@
 %% Plot readings
 clear;
-file = "dryRun\y5.mat";
+file = "xyV3\y5.mat";
 
 load("Raw\" + file);
 
@@ -41,7 +41,7 @@ stairs(ax13, 1:dataLen, readings{:,"velZ"}, "Color", "#77AC30");
 
 %% Clip for save processed data
 
-clipRange = 36:307;
+clipRange = 48:262;
 
 data = readings(clipRange,:);
 
