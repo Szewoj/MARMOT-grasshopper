@@ -6,7 +6,7 @@ import time
 import Actuator.motors
 import position
 
-F_SUSPENSION = 25. # Hz
+F_SUSPENSION = 40. # Hz
 
 class Suspension:
     """Suspension class for batch servo motor management."""

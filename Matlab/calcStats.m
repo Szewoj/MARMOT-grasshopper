@@ -50,15 +50,59 @@ stairs(ax13, timestamps, data{:,"velZ"}, "Color", "#77AC30");
 
 %   MSE: (x, y, vZ)
 
-%   MSD: (x, y, vZ)
+x_MSE  = data{:,"angleX"}' * data{:,"angleX"} / dataLen;
+y_MSE  = data{:,"angleY"}' * data{:,"angleY"} / dataLen;
+vZ_MSE = data{:,"velZ"}' * data{:,"velZ"} / dataLen;
 
-%   mean and std: (x, y, vZ)
+%   median absolute deviation: (x, y, vZ)
+
+x_MAD  = median(abs(data{:,"angleX"}));
+y_MAD  = median(abs(data{:,"angleY"}));
+vZ_MAD = median(abs(data{:,"velZ"}));
+
+%   mean absolute error: (x, y, vZ)
+
+x_MAE  = mean(abs(data{:,"angleX"}));
+y_MAE  = mean(abs(data{:,"angleY"}));
+vZ_MAE = mean(abs(data{:,"velZ"}));
+
+%   mean and deviation: (x, y, vZ)
+
+x_m = mean(data{:,"angleX"});
+x_std = std(data{:,"angleX"});
+
+y_m = mean(data{:,"angleY"});
+y_std = std(data{:,"angleY"});
+
+vZ_m = mean(data{:,"velZ"});
+vZ_std = std(data{:,"velZ"});
 
 %   x and y derivative:
 
+dt = timestamps(2:end) - timestamps(1:end-1);
+
+dx = (data{2:end,"angleX"} - data{1:end-1,"angleX"}) ./ dt;
+dy = (data{2:end,"angleY"} - data{1:end-1,"angleY"}) ./ dt;
+
 %       MSE: (dx, dy)
 
-%       MSD: (dx, dy)
+dx_MSE = dx'*dx / (dataLen-1);
+dy_MSE = dy'*dy / (dataLen-1);
+
+%       MAD: (dx, dy)
+
+dx_MAD = median(abs(dx));
+dy_MAD = median(abs(dy));
+
+%       MAE: (dx, dy)
+
+dx_MAE  = mean(abs(dx));
+dy_MAE  = mean(abs(dy));
 
 %       mean and std: (dx, dy)
 
+dx_m = mean(dx);
+dx_std = std(dx);
+
+dy_m = mean(dy);
+dy_std = std(dy);

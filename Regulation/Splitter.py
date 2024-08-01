@@ -127,8 +127,8 @@ class Splitter:
 
         #print(self._zSplit)
         
-        om_x = round(.5 * baseSplit[0] + .5 * self._zSplit.tolist()[0][0] , 2)
-        om_y = round(.5 * baseSplit[1] + .5 * self._zSplit.tolist()[1][0] , 2)
+        om_x = round(.3 * baseSplit[0] + .7 * self._zSplit.tolist()[0][0] , 2)
+        om_y = round(.3 * baseSplit[1] + .7 * self._zSplit.tolist()[1][0] , 2)
 
         return self.split(dUpid, (om_x, om_y))
 
