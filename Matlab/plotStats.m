@@ -2,7 +2,7 @@
 
 load("Stats\batch.mat");
 
-toPlot = {"dryRun", "xyV2"};
+toPlot = {"dryRun", "xyV1"};
 
 
 % Ready figures:
