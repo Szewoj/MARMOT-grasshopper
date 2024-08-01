@@ -41,7 +41,7 @@ stairs(ax13, 1:dataLen, readings{:,"velZ"}, "Color", "#77AC30");
 
 %% Clip for save processed data
 
-clipRange = 24:248;
+clipRange = 36:307;
 
 data = readings(clipRange,:);
 

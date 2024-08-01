@@ -83,9 +83,9 @@ class PID_XY_V2(PID):
 
 class PID_XY_V3(PID):
     """Custom experimental PID parameters. Higher integral parameter.(Version: 1)"""
-    P = (.195, .175)
-    I = (.5415, 1.1)
-    D = (.0092, .0175)
+    P = (.195, .18)
+    I = (.5415, .85)
+    D = (.0092, .016)
     B = (0.1 * I[0], 0.1 * I[1])
 
     FREQ = 75  # regulation frequency

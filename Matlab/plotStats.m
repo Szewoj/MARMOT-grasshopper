@@ -2,7 +2,7 @@
 
 load("Stats\batch.mat");
 
-toPlot = {"dryRun", "xyV1"};
+toPlot = {"dryRun", "xyV2"};
 
 
 % Ready figures:
@@ -34,6 +34,20 @@ xlabel(ax16, "v [m/s]"); ylabel(ax16, "v_z [m/s]");
 
 
 %   Figure 2 - x y vZ - gaussian distribution 
+f2 = figure(2);
+clf(f2)
+
+subplot(3,1,1); ax21 = gca;
+subplot(3,1,2); ax22 = gca;
+subplot(3,1,3); ax23 = gca;
+
+hold(ax21, 'on'); grid(ax21, 'on'); title(ax21, 'X axis error distribution')
+hold(ax22, 'on'); grid(ax22, 'on'); title(ax22, 'Y axis error distribution')
+hold(ax23, 'on'); grid(ax23, 'on'); title(ax23, 'Z velocity error distribution')
+
+xlabel(ax21, "v [m/s]"); ylabel(ax21, "\phi_x [mrad]"); 
+xlabel(ax22, "v [m/s]"); ylabel(ax22, "\phi_y [mrad]"); 
+xlabel(ax23, "v [m/s]"); ylabel(ax23, "v_z [m/s]"); 
 
 
 %   Figure 3 - dx dy - MAE and MAD
@@ -55,6 +69,11 @@ for i = 1:length(toPlot)
     plot(ax14, sorted{selectRows,"Speed"}, sorted{selectRows,"x_MAD"}, 'v:')
     plot(ax15, sorted{selectRows,"Speed"}, sorted{selectRows,"y_MAD"}, 'v:')
     plot(ax16, sorted{selectRows,"Speed"}, sorted{selectRows,"vZ_MAD"}, 'v:')
+
+    % F2:
+    errorbar(ax21, sorted{selectRows,"Speed"}, sorted{selectRows,"x_m"}, sorted{selectRows,"x_std"}, 'o:')
+    errorbar(ax22, sorted{selectRows,"Speed"}, sorted{selectRows,"y_m"}, sorted{selectRows,"y_std"}, 'o:')
+    errorbar(ax23, sorted{selectRows,"Speed"}, sorted{selectRows,"vZ_m"}, sorted{selectRows,"vZ_std"}, 'o:')
 
 
 end
