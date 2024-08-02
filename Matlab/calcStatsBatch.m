@@ -1,14 +1,18 @@
-% Data set definition:
-
 clear;
-dataSets = struct('Label', {"dryRun", "lambdaV1", "lambdaV2", "x", "y", "xyV1", "xyV2", "xyV2z", "xyV3"}, ...
-                  'Range', {1:5,      1:1,        1:5,        1:1, 1:1, 1:5,    1:5,    1:5,     1:5},...
-                  'Modes', {["a", "b", "y"], ["a", "b", "y"], ["a", "b", "y"], ["a", "b"], ["a", "b"], ...
-                            ["a", "b", "y"], ["a", "b", "y"], ["a", "b", "y"], ["a", "b", "y"]});
-
-
 % Constants:
 trailLen = 5.48; % m
+singleLen = 4.8; % m
+slalomLen = 9.5; % m
+
+
+% Data set definition:
+dataSets = struct('Label', {"dryRun", "lambdaV1", "lambdaV2", "x", "y", "xyV1", "xyV2", "xyV2z", "xyV3", "xyV3z", "dryRunSingle", "xyV3Single", "dryRunSlalom", "xyV3Slalom"}, ...
+                  'Range', {1:5,      1:1,        1:5,        1:1, 1:1, 1:5,    1:5,    1:5,     1:5,    1:5,    1:5,            1:5,           1:5,           1:5},...
+                  'Modes', {["a", "b", "y"], ["a", "b", "y"], ["a", "b", "y"], ["a", "b"], ["a", "b"], ["a", "b", "y"], ...
+                            ["a", "b", "y"], ["a", "b", "y"], ["a", "b", "y"], ["a", "b", "y"], ["a", "b", "y"], ["a", "b", "y"], ["y"], ["y"]}, ...
+                  'Distance', {trailLen, trailLen, trailLen, trailLen, trailLen, trailLen, trailLen, trailLen, trailLen, trailLen, singleLen, singleLen, slalomLen, slalomLen});
+
+
 
 % init statistic table:
 stats = initStatTable();
@@ -36,7 +40,7 @@ for i = 1:setsLen
             timestamps = posixtime(data{:,"Time"});
             timestamps = timestamps - timestamps(1);
 
-            statRow.Speed = trailLen / timestamps(end);
+            statRow.Speed = dataSets(i).Distance / timestamps(end);
 
             statRow.x_MSE  = data{:,"angleX"}' * data{:,"angleX"} / dataLen;
             statRow.y_MSE  = data{:,"angleY"}' * data{:,"angleY"} / dataLen;
