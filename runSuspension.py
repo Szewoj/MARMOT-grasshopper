@@ -104,9 +104,9 @@ def main():
         # calculate output:
         uPID[:] = pid2d.update(e)
 
-        #u[:] = u + np.round(pidSplitter.splitEven(uPID),1)
+        u[:] = u + np.round(pidSplitter.splitEven(uPID),1)
         #u[:] = u + np.round(pidSplitter.splitCentering(uPID, u),1)
-        u[:] = u + np.round(pidSplitter.splitByZ(uPID, u, z[1]),1)
+        #u[:] = u + np.round(pidSplitter.splitByZ(uPID, u, z[1]),1)
 
 
         # anti windup:
