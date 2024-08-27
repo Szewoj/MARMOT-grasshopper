@@ -1,6 +1,6 @@
 clear;
 
-load("Data\StepResponse.mat")
+load("Raw\StepResponse.mat")
 
 PVx = (readings{:, "angleX"})';
 PVy = (readings{:, "angleY"})';
@@ -9,6 +9,7 @@ OPx = (readings{:, "PID_X"}*10)';
 OPy = (readings{:, "PID_Y"}*10)';
 
 t = 1:length(PVx);
+k = 0:1/25:(length(PVx)-1)/25 ;
 
 % full scale experiment
 
@@ -17,8 +18,8 @@ clf
 ax11 = subplot(2,1,1);
 ax12 = subplot(2,1,2);
 
-title(ax11, "X axis step response experiment. \Deltat=0,04s")
-title(ax12, "Y axis step response experiment. \Deltat=0,04s")
+title(ax11, "Odpowiedź skokowa w osi X. \Deltat=0,04s")
+title(ax12, "Odpowiedź skokowa w osi Y. \Deltat=0,04s")
 
 grid(ax11, "on")
 grid(ax12, "on")
@@ -26,11 +27,20 @@ grid(ax12, "on")
 hold(ax11,"on")
 hold(ax12,"on")
 
-stairs(ax11, t, OPx)
-plot(ax11, t, PVx)
+s111 = stairs(ax11, k, OPx);
+s112 = stairs(ax11, k, PVx);
 
-stairs(ax12, t, OPy)
-plot(ax12, t, PVy)
+s121 = stairs(ax12, k, OPy);
+s122 = stairs(ax12, k, PVy);
+
+legend(ax11, [s111, s112], {'~u_x', '\phi_x'})
+legend(ax12, [s121, s122], {'~u_y', '\phi_y'})
+
+xlabel(ax11, 't [s]')
+xlabel(ax12, 't [s]')
+
+ylabel(ax11, '\phi [mrad]')
+ylabel(ax12, '\phi [mrad]')
 
 % X detailed plots
 

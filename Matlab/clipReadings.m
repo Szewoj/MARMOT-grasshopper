@@ -1,6 +1,6 @@
 %% Plot readings
 clear;
-file = "xyV3z\y5.mat";
+file = "xyV3Single\b8.mat";
 
 load("Raw\" + file);
 
@@ -41,7 +41,7 @@ stairs(ax13, 1:dataLen, readings{:,"velZ"}, "Color", "#77AC30");
 
 %% Clip for save processed data
 
-clipRange = 48:265;
+clipRange = 50:307;
 
 data = readings(clipRange,:);
 
