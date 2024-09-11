@@ -71,7 +71,7 @@ class PID_XY_V1(PID):
 
 
 class PID_XY_V2(PID):
-    """Custom experimental PID parameters. Higher integral parameter.(Version: 1)"""
+    """Custom experimental PID parameters. Higher integral parameter.(Version: 2)"""
     P = (.195, .19)
     I = (.5415, .7605)
     D = (.0092, .0067)
@@ -82,7 +82,7 @@ class PID_XY_V2(PID):
 
 
 class PID_XY_V3(PID):
-    """Custom experimental PID parameters. Higher integral parameter.(Version: 1)"""
+    """Custom experimental PID parameters. Customized Y regulation with satisfactory outcomes.(Version: 3)"""
     P = (.195, .18)
     I = (.5415, .85)
     D = (.0092, .016)

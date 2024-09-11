@@ -1,6 +1,6 @@
 clear;
 
-file = "dryRun\a2.mat";
+file = "dryRunSlalom\y3.mat";
 
 load("Data\" + file);
 

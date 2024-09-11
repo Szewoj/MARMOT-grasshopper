@@ -1,6 +1,6 @@
 %% Plot readings
 clear;
-file = "lambdaV1\b1.mat";
+file = "dryRunSlalom\y5.mat";
 
 load("Raw\" + file);
 
@@ -41,7 +41,7 @@ stairs(ax13, 1:dataLen, readings{:,"velZ"}, "Color", "#77AC30");
 
 %% Clip for save processed data
 
-clipRange = 28:170;
+clipRange = 29:456;
 
 data = readings(clipRange,:);
 

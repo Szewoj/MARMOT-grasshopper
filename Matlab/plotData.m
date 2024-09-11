@@ -1,6 +1,6 @@
 clear;
 
-file = "lambdaV1\b1.mat";
+file = "xyV3Slalom\y3.mat";
 
 load("Data\" + file);
 
